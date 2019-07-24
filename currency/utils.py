@@ -112,7 +112,21 @@ def update_rates(config, path):
     return rates["rates"]
 
 def calculate(value, from_currency, to_currency, config, rates):
+    """The Main Calculation of Conversion"""
     return round(
         value * (rates[to_currency] / rates[from_currency]),
         config.precision
     )
+
+def currencies_filter(query, abbreviation, currency, config):
+    """Return true if query satisfy certain criterias"""
+    if abbreviation in config.currencies:
+        return False
+    if not query:
+        return True
+    if abbreviation.startswith(query.upper()):
+        return True
+    for key_word in currency.split():
+        if key_word.lower().startswith(query.lower()):
+            return True
+    return False

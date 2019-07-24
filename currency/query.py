@@ -1,10 +1,5 @@
 """Query"""
-from .utils import (
-    is_it_currency,
-    is_it_float,
-    is_it_something_mixed,
-    calculate
-)
+from .utils import is_it_currency, is_it_float, is_it_something_mixed, calculate
 
 class Query():
     """Parse query into machine-readable format"""
@@ -56,16 +51,37 @@ class Query():
         """
         for currency in config.currencies:
             converted = calculate(1, currency, config.base, config, rates)
-            workflow.add_item(title="1 {0} = {1} {2}".format(currency, converted, config.base),
-                              subtitle=currency,
-                              icon="icons/{0}.png".format(currency),
-                              valid=True,
-                              arg=str(converted))
+            item = workflow.add_item(title="1 {0} = {1} {2}".format(currency, converted, config.base),
+                                     subtitle=currency,
+                                     icon="icons/{0}.png".format(currency),
+                                     valid=True,
+                                     arg=str(converted),
+                                     copytext=str(converted))
+            # item.add_modifier(key="cmd",
+            #                   subtitle="cmd-subtitle",
+            #                   valid=True,
+            #                   arg=str(converted))
+            # item.add_modifier(key="alt",
+            #                   subtitle="alt-subtitle",
+            #                   valid=True,
+            #                   arg=str(converted))
+            # item.add_modifier(key="ctrl",
+            #                   subtitle="ctrl-subtitle",
+            #                   valid=True,
+            #                   arg=str(converted))
+            # item.add_modifier(key="shift",
+            #                   subtitle="shift-subtitle",
+            #                   valid=True,
+            #                   arg=str(converted))
+            # item.add_modifier(key="fn",
+            #                   subtitle="fn-subtitle",
+            #                   valid=True,
+            #                   arg=str(converted))
     def pattern_1(self, workflow, config, rates):
         """
         Method 1
-        100 (num)
-        Convert all currencies with value (num) to base
+        100 (value)
+        Convert all currencies with value (value) to base
         """
         for currency in config.currencies:
             converted = calculate(self.value, currency, config.base, config, rates)
@@ -97,7 +113,7 @@ class Query():
     def pattern_3(self, workflow, config, rates):
         """
         Method 3
-        5 GBP (num, currency)
+        5 GBP (value, currency)
         Convert 5 (currency) to (base)
         Convert 5 (base) to (currency)
         """
@@ -116,7 +132,7 @@ class Query():
     def pattern_6(self, workflow, config, rates):
         """
         Method 4
-        GBP JPY (currency_1, currency_2)
+        GBP CAD (currency_1, currency_2)
         Convert 1 (currency_1) to (currency_2)
         Convert 1 (currency_2) to (currency_1)
         """
@@ -135,9 +151,9 @@ class Query():
     def pattern_7(self, workflow, config, rates):
         """
         Method 5
-        5 GBP JPY (num, currency_1, currency_2)
-        Convert (num) (currency_1) to (currency_2)
-        Convert (num) (currency_2) to (currency_1)
+        5 GBP CAD (value, currency_1, currency_2)
+        Convert (value) (currency_1) to (currency_2)
+        Convert (value) (currency_2) to (currency_1)
         """
         converted_one = calculate(self.value, self.currency_one, self.currency_two, config, rates)
         workflow.add_item(title="{0} {1} = {2} {3}".format(

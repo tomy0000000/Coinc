@@ -8,6 +8,6 @@ class Config():
         self.expire = int(expire)
         self.base = str(base)
         self.currencies = currencies
-    def save(self, path):
+    def save(self, path="config.json"):
         with open(path, "w+") as file:
             json.dump(self.__dict__, file)
