@@ -30,7 +30,7 @@
 
 * This project is inspired by [FlyRabbit / alfred3-workflow-CurrencyX](https://github.com/FlyRabbit/alfred3-workflow-CurrencyX)
 
-  I made this spin-off because the original one doesn't work in the way I thought it should be. As I'm trying to tweaking the the old ones, things get more out of control which ended up I've decided to re-write my own version.
+  I made this spin-off because the original one doesn't work in the way I thought it should be. As I'm trying to tweaking the the old ones, things get more out of control which ended up me deciding to re-write my own version.
 
 * Core Library depends on the work-of-art-library: [deanishe / alfred-workflow](https://github.com/deanishe/alfred-workflow)
 

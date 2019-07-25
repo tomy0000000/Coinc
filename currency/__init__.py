@@ -1,6 +1,7 @@
 """Function to be called by workflow"""
 from .query import Query
 from .utils import load_config, load_rates, load_currencies, calculate, currencies_filter
+from .workflow import ICON_WARNING
 
 __all__ = [
     "load_all_currencies",
@@ -15,14 +16,13 @@ __all__ = [
 
 def load_all_currencies(workflow):
     """Load all available currencies"""
+    settings = workflow.settings
     config = load_config()
     currencies = load_currencies()
-    workflow.args.pop(0)
     if len(workflow.args) > 2:
         raise ValueError("One Currency at a time, please")
     args = workflow.args[1:]
     query = "" if not args else str(args[0]).upper()
-    workflow.logger.info("query: {}".format(query))
     # TODO: Try implement this after Python 3 Support
     # abb_filtered = workflow.filter(query, currencies.items(), key=lambda item: item[0])
     # cur_filtered = workflow.filter(query, currencies.items(), key=lambda item: item[1])
@@ -35,7 +35,7 @@ def load_all_currencies(workflow):
     #                       arg=abbreviation)
     items = []
     for abbreviation, currency in currencies.items():
-        if currencies_filter(query, abbreviation, currency, config):
+        if currencies_filter(query, abbreviation, currency, settings["currencies"]):
             items.append({
                 "title": currency,
                 "subtitle": abbreviation,
@@ -48,52 +48,85 @@ def load_all_currencies(workflow):
         workflow.add_item(**item)
     if not items:
         workflow.add_item(title="No Currency Found...",
-                          subtitle="Perhaps trying something else?")
+                          subtitle="Perhaps trying something else?",
+                          icon=ICON_WARNING)
         workflow.add_item(title="Kindly Notice",
-                          subtitle="Your existed favorites won't show up in here")
+                          subtitle="Your existed favorites won't show up in here",
+                          icon=ICON_WARNING)
     workflow.send_feedback()
 
 def load_favorite_currencies(workflow):
     """Load favorite currencies set in configs"""
+    settings = workflow.settings
     config = load_config()
     currencies = load_currencies()
-    for abbreviation in config.currencies:
-        workflow.add_item(title=currencies[abbreviation],
-                          subtitle=abbreviation,
-                          icon="icons/{0}.png".format(abbreviation),
-                          valid=True,
-                          arg=abbreviation)
+    if len(workflow.args) > 2:
+        raise ValueError("One Currency at a time, please")
+    args = workflow.args[1:]
+    query = "" if not args else str(args[0]).upper()
+    items = []
+    for abbreviation in settings[currencies]:
+        if currencies_filter(query, abbreviation, currencies[abbreviation]):
+            items.append({
+                "title": currencies[abbreviation],
+                "subtitle": abbreviation,
+                "icon": "icons/{0}.png".format(abbreviation),
+                "valid": True,
+                "arg": abbreviation
+            })
+    for item in items:
+        workflow.add_item(**item)
     workflow.send_feedback()
 
 def convert(workflow):
     """Run conversion patterns"""
+    settings = workflow.settings
     config = load_config()
-    # workflow.logger.info(str(config.__dict__))
-    rates = load_rates(config)
+    rates = load_rates(settings)
     query = Query(workflow.args[1:])
-    # workflow.add_item(title="query", subtitle=config.__dict__)
-    query.run_pattern(workflow, config, rates)
+    query.run_pattern(workflow, rates)
     workflow.send_feedback()
 
 def add(workflow):
     currency = workflow.args[1]
+
     config = load_config()
     config.currencies.append(currency)
     config.save()
+
+    settings = workflow.settings
+    settings["currencies"].append(currency)
+    settings.save()
+
     print(currency)
 
 def remove(workflow):
     currency = workflow.args[1]
+
     config = load_config()
     config.currencies.remove(currency)
     config.save()
+
+    settings = workflow.settings
+    settings["currencies"].remove(currency)
+    settings.save()
+
     print(currency)
 
 def move(workflow):
     args = workflow.args[1:]
 
 def base(workflow):
-    args = workflow.args[1:]
+    currency = workflow.args[1]
+
+    config = load_config()
+    config.base = currency
+    config.save()
+
+    settings = workflow.settings
+    settings["base"] = currency
+
+    print(currency)
 
 def help_me(workflow):
     workflow.add_item(title="cur",

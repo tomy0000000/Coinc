@@ -39,19 +39,20 @@ class Query():
             self.bit_pattern += 4
             return currency
         raise ValueError("Too many Currencies")
-    def run_pattern(self, workflow, config, rates):
+    def run_pattern(self, workflow, rates):
         """Run Correspond Function by Pattern"""
         workflow.logger.info("Run Pattern {0}".format(self.bit_pattern))
         func = getattr(self, "pattern_{0}".format(self.bit_pattern))
-        func(workflow, config, rates)
-    def pattern_0(self, workflow, config, rates):
+        func(workflow, rates)
+    def pattern_0(self, workflow, rates):
         """
         Method 0
         Convert all currencies with value 1 to base
         """
-        for currency in config.currencies:
-            converted = calculate(1, currency, config.base, config, rates)
-            item = workflow.add_item(title="1 {0} = {1} {2}".format(currency, converted, config.base),
+        settings = workflow.settings
+        for currency in settings["currencies"]:
+            converted = calculate(1, currency, settings["base"], settings, rates)
+            item = workflow.add_item(title="1 {0} = {1} {2}".format(currency, converted, settings["base"]),
                                      subtitle=currency,
                                      icon="icons/{0}.png".format(currency),
                                      valid=True,
@@ -77,91 +78,96 @@ class Query():
             #                   subtitle="fn-subtitle",
             #                   valid=True,
             #                   arg=str(converted))
-    def pattern_1(self, workflow, config, rates):
+    def pattern_1(self, workflow, rates):
         """
         Method 1
         100 (value)
         Convert all currencies with value (value) to base
         """
-        for currency in config.currencies:
-            converted = calculate(self.value, currency, config.base, config, rates)
+        settings = workflow.settings
+        for currency in settings["currencies"]:
+            converted = calculate(self.value, currency, settings["base"], settings, rates)
             workflow.add_item(title="{0} {1} = {2} {3}".format(
-                self.value, currency, converted, config.base),
+                self.value, currency, converted, settings["base"]),
                               subtitle=currency,
                               icon="icons/{0}.png".format(currency),
                               valid=True,
                               arg=str(converted))
-    def pattern_2(self, workflow, config, rates):
+    def pattern_2(self, workflow, rates):
         """
         Method 2
         GBP (currency)
         Convert 1 (currency) to (base)
         Convert 1 (base) to (currency)
         """
-        converted_one = calculate(1, self.currency_one, config.base, config, rates)
+        settings = workflow.settings
+        converted_one = calculate(1, self.currency_one, settings["base"], settings, rates)
         workflow.add_item(title="1 {0} = {1} {2}".format(
-            self.currency_one, converted_one, config.base),
+            self.currency_one, converted_one, settings["base"]),
                           icon="icons/{0}.png".format(self.currency_one),
                           valid=True,
                           arg=str(converted_one))
-        converted_two = calculate(1, config.base, self.currency_one, config, rates)
+        converted_two = calculate(1, settings["base"], self.currency_one, settings, rates)
         workflow.add_item(title="1 {0} = {1} {2}".format(
-            config.base, converted_two, self.currency_one),
+            settings["base"], converted_two, self.currency_one),
                           icon="icons/{0}.png".format(self.currency_one),
                           valid=True,
                           arg=str(converted_two))
-    def pattern_3(self, workflow, config, rates):
+    def pattern_3(self, workflow, rates):
         """
         Method 3
         5 GBP (value, currency)
         Convert 5 (currency) to (base)
         Convert 5 (base) to (currency)
         """
-        converted_one = calculate(self.value, self.currency_one, config.base, config, rates)
+        settings = workflow.settings
+        converted_one = calculate(self.value, self.currency_one, settings["base"], settings, rates)
         workflow.add_item(title="{0} {1} = {2} {3}".format(
-            self.value, self.currency_one, converted_one, config.base),
+            self.value, self.currency_one, converted_one, settings["base"]),
                           icon="icons/{0}.png".format(self.currency_one),
                           valid=True,
                           arg=str(converted_one))
-        converted_two = calculate(self.value, config.base, self.currency_one, config, rates)
+        converted_two = calculate(self.value, settings["base"], self.currency_one, settings, rates)
         workflow.add_item(title="{0} {1} = {2} {3}".format(
-            self.value, config.base, converted_two, self.currency_one),
+            self.value, settings["base"], converted_two, self.currency_one),
                           icon="icons/{0}.png".format(self.currency_one),
                           valid=True,
                           arg=str(converted_two))
-    def pattern_6(self, workflow, config, rates):
+    def pattern_6(self, workflow, rates):
         """
         Method 4
         GBP CAD (currency_1, currency_2)
         Convert 1 (currency_1) to (currency_2)
         Convert 1 (currency_2) to (currency_1)
         """
-        converted_one = calculate(1, self.currency_one, self.currency_two, config, rates)
+        settings = workflow.settings
+        converted_one = calculate(1, self.currency_one, self.currency_two, settings, rates)
         workflow.add_item(title="1 {0} = {1} {2}".format(
             self.currency_one, converted_one, self.currency_two),
                           icon="icons/{0}.png".format(self.currency_two),
                           valid=True,
                           arg=str(converted_one))
-        converted_two = calculate(1, self.currency_two, self.currency_one, config, rates)
+        converted_two = calculate(1, self.currency_two, self.currency_one, settings, rates)
         workflow.add_item(title="1 {0} = {1} {2}".format(
             self.currency_two, converted_two, self.currency_one),
                           icon="icons/{0}.png".format(self.currency_one),
                           valid=True,
                           arg=str(converted_two))
-    def pattern_7(self, workflow, config, rates):
+    def pattern_7(self, workflow, rates):
         """
         Method 5
         5 GBP CAD (value, currency_1, currency_2)
         Convert (value) (currency_1) to (currency_2)
         Convert (value) (currency_2) to (currency_1)
         """
-        converted_one = calculate(self.value, self.currency_one, self.currency_two, config, rates)
+        settings = workflow.settings
+        converted_one = calculate(self.value, self.currency_one, self.currency_two, settings, rates)
         workflow.add_item(title="{0} {1} = {2} {3}".format(
             self.value, self.currency_one, converted_one, self.currency_two),
                           icon="icons/{0}.png".format(self.currency_two),
                           valid=True,
                           arg=str(converted_one))
-        converted_two = calculate(self.value, self.currency_two, self.currency_one, config, rates)
+        converted_two = calculate(self.value, self.currency_two, self.currency_one, settings, rates)
         workflow.add_item(title="{0} {1} = {2} {3}".format(
             self.value, self.currency_two, converted_two, self.currency_one),
                           icon="icons/{0}.png".format(self.currency_one),

@@ -85,25 +85,25 @@ def update_currencies(path):
         json.dump(currencies, file)
     return currencies
 
-def load_rates(config, path="rates.json"):
+def load_rates(settings, path="rates.json"):
     """Load rates, update if not exist or too-old"""
     if not os.path.exists(path):
-        return update_rates(config, path)
+        return update_rates(settings, path)
     with open(path) as file:
         rates = byteify(json.load(file, "utf-8"))
-    # if rates["timestamp"] < int(time.time())-config.expire:
-    #     return update_rates(config, path)
+    # if rates["timestamp"] < int(time.time())-settings["expire"]:
+    #     return update_rates(settings, path)
     return rates["rates"]
 
-def update_rates(config, path):
+def update_rates(settings, path):
     """Update rates with API"""
     if sys.version_info.major == 2:
         import urllib2
-        response = urllib2.urlopen(RATE_ENDPOINT.format(config.app_id))
+        response = urllib2.urlopen(RATE_ENDPOINT.format(settings["app_id"]))
         rates = byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
         import urllib.request
-        response = urllib.request.urlopen(RATE_ENDPOINT.format(config.app_id))
+        response = urllib.request.urlopen(RATE_ENDPOINT.format(settings["app_id"]))
         rates = json.load(response)
     else:
         raise RuntimeError("Unexpected Python Version")
@@ -111,16 +111,17 @@ def update_rates(config, path):
         json.dump(rates, file)
     return rates["rates"]
 
-def calculate(value, from_currency, to_currency, config, rates):
+def calculate(value, from_currency, to_currency, settings, rates):
     """The Main Calculation of Conversion"""
     return round(
         value * (rates[to_currency] / rates[from_currency]),
-        config.precision
+        settings["precision"]
     )
 
-def currencies_filter(query, abbreviation, currency, config):
+def currencies_filter(query, abbreviation, currency, favorite=None):
     """Return true if query satisfy certain criterias"""
-    if abbreviation in config.currencies:
+    favorite = favorite or []
+    if abbreviation in favorite:
         return False
     if not query:
         return True
