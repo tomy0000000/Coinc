@@ -13,9 +13,9 @@ def main(workflow):
 
 if __name__ == "__main__":
     WF = Workflow3(
-        # update_settings={
-        #     "github_slug": "tomy0000000/coon",
-        #     "frequency": 7
-        # },
+        update_settings={
+            "github_slug": "tomy0000000/coon",
+            "frequency": 7
+        },
         help_url="https://git.io/fjD6M")
     sys.exit(WF.run(main))
