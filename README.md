@@ -20,9 +20,6 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 <!-- /MarkdownTOC -->
 
-* List of Currencies
-* Methods
-
 ## Setup
 
 ### Prerequisite
@@ -33,7 +30,7 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 ### Installation
 
-* Head overto [releases](https://github.com/tomy0000000/coon/releases), download the latest version
+* Head overto [Releases](https://github.com/tomy0000000/coon/releases), download the latest version
 * Double-click on `Coon.alfredworkflow` to install
 
 ### Config & Settings
@@ -58,14 +55,19 @@ The following examples demonstrate the usage with the default config and setting
 
 * `cur`: Convert 1 unit of all favorite currencies to base currency
 ![cur](assets/cur.png)
+
 * `cur [value]`: Convert all favorite currencies with [value] to base currency
 ![cur 200](assets/cur 200.png)
+
 * `cur [currency]`: Convert between [currency] and base currency with 1 unit
 ![cur GBP](assets/cur GBP.png)
+
 * `cur [value] [currency]`: Convert between [currency] and base currency with [value] unit
 ![cur 5 GBP](assets/cur 5 GBP.png)
+
 * `cur [currency_1] [currency_2]`: Convert between [currency_1] and [currency_2] with 1 unit
 ![cur GBP CAD](assets/cur GBP CAD.png)
+
 * `cur [value] [currency_1] [currency_2]`: Convert between [currency_1] and [currency_2] with [value] unit
 ![cur 5 GBP CAD](assets/cur 5 GBP CAD.png)
 
@@ -83,6 +85,7 @@ The following examples demonstrate the usage with the default config and setting
 * `cur-rm`: Remove a currency from favorite list
 * `cur-arr`: Arrange orders of the favorite list
 ![cur-arr](assets/cur-arr.gif)
+
 * `cur-ref`: Refresh Currency List & Rates
 * `cur-help`: Show a list of example usage or opens up this README
 
