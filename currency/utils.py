@@ -4,7 +4,6 @@ import os
 import sys
 import re
 import time
-from .config import Config
 
 RATE_ENDPOINT = "https://openexchangerates.org/api/latest.json?show_alternative=1&app_id={}"
 CURRENCY_ENDPOINT = "https://openexchangerates.org/api/currencies.json?show_alternative=1"
@@ -21,9 +20,10 @@ def byteify(loaded_dict):
 
 def is_it_currency(query):
     """Check if query is a valid currency"""
-    match_result = re.match(r"^[A-Z]{3}$", query.upper())
-    if match_result:
-        return match_result.string
+    currencies = load_currencies()
+    query = query.upper()
+    if query in currencies:
+        return query
     return None
 
 def is_it_float(query):
@@ -35,42 +35,29 @@ def is_it_float(query):
 
 def is_it_something_mixed(query):
     """Check if query is Mixed with value and currency"""
-    match_result = re.match(r"^([0-9]*(\.[0-9]+)?)([A-Z]{3})$", query.upper())
+    match_result = re.match(r"^(\d*(\.\d+)?)([A-Z_]*)$", query.upper())
     if match_result:
-        value = float(match_result.groups()[0])
-        currency = match_result.groups()[2]
-        return (value, currency)
+        value = is_it_float(match_result.groups()[0])
+        currency = is_it_currency(match_result.groups()[2])
+        if value and currency:
+            return (value, currency)
     return None
-
-def load_config(path="config.json"):
-    """Load config, create one if not exist"""
-    if not os.path.exists(path):
-        config = Config("XXXXXXXXXX")
-        config.save(path)
-        return config
-    with open(path) as file:
-        if sys.version_info.major == 2:
-            raw_config = byteify(json.load(file, "utf-8"))
-        elif sys.version_info.major == 3:
-            raw_config = json.load(file)
-        else:
-            raise RuntimeError("Unexpected Python Version")
-        return Config(**raw_config)
 
 def load_currencies(path="currencies.json"):
     """Load currencies, create one if not exists"""
     if not os.path.exists(path):
-        return update_currencies(path)
+        return refresh_currencies(path)
     with open(path) as file:
         if sys.version_info.major == 2:
-            currenies = byteify(json.load(file, "utf-8"))
+            currencies = byteify(json.load(file, "utf-8"))
         elif sys.version_info.major == 3:
-            currenies = json.load(file)
+            currencies = json.load(file)
         else:
             raise RuntimeError("Unexpected Python Version")
-        return currenies
+        return currencies
 
-def update_currencies(path):
+def refresh_currencies(path="currencies.json"):
+    """Fetch the newest currency list"""
     if sys.version_info.major == 2:
         import urllib2
         response = urllib2.urlopen(CURRENCY_ENDPOINT)
@@ -85,38 +72,74 @@ def update_currencies(path):
         json.dump(currencies, file)
     return currencies
 
-def load_rates(settings, path="rates.json"):
+def load_rates(path="rates.json"):
     """Load rates, update if not exist or too-old"""
+    from .config import Config
+    config = Config()
     if not os.path.exists(path):
-        return update_rates(settings, path)
+        return refresh_rates(path)
     with open(path) as file:
         rates = byteify(json.load(file, "utf-8"))
-    # if rates["timestamp"] < int(time.time())-settings["expire"]:
-    #     return update_rates(settings, path)
+    last_update = int(time.time() - os.path.getmtime(path))
+    if config.expire < last_update:
+        return refresh_rates(path)
+    # inject rates file modification datetime
+    rates["rates"]["last_update"] = "{} seconds ago".format(last_update)
     return rates["rates"]
 
-def update_rates(settings, path):
+def refresh_rates(path="rates.json"):
     """Update rates with API"""
+    from .config import Config
+    config = Config()
     if sys.version_info.major == 2:
         import urllib2
-        response = urllib2.urlopen(RATE_ENDPOINT.format(settings["app_id"]))
+        try:
+            response = urllib2.urlopen(RATE_ENDPOINT.format(config.app_id))
+        except urllib2.HTTPError:
+            raise EnvironmentError(
+                "Invalid App ID: {}".format(config.app_id),
+                "Fix this in workflow environment variables sheet in Alfred Preferences")
         rates = byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
         import urllib.request
-        response = urllib.request.urlopen(RATE_ENDPOINT.format(settings["app_id"]))
+        from urllib.error import HTTPError
+        try:
+            response = urllib.request.urlopen(RATE_ENDPOINT.format(config.app_id))
+        except HTTPError:
+            raise EnvironmentError(
+                "Invalid App ID: {}".format(config.app_id),
+                "Fix this in workflow environment variables sheet in Alfred Preferences")
         rates = json.load(response)
     else:
         raise RuntimeError("Unexpected Python Version")
     with open(path, "w+") as file:
         json.dump(rates, file)
+    rates["rates"]["last_update"] = "Now"
     return rates["rates"]
 
-def calculate(value, from_currency, to_currency, settings, rates):
+def calculate(value, from_currency, to_currency, rates):
     """The Main Calculation of Conversion"""
+    from .config import Config
+    config = Config()
     return round(
-        value * (rates[to_currency] / rates[from_currency]),
-        settings["precision"]
+        value * (rates[to_currency] / rates[from_currency]), config.precision
     )
+
+def generate_items(query, raw_items, favorite_filter=None, sort=False):
+    currencies = load_currencies()
+    items = []
+    for abbreviation in raw_items:
+        if currencies_filter(query, abbreviation, currencies[abbreviation], favorite_filter):
+            items.append({
+                "title": currencies[abbreviation],
+                "subtitle": abbreviation,
+                "icon": "flags/{}.png".format(abbreviation),
+                "valid": True,
+                "arg": abbreviation
+            })
+    if sort:
+        items = sorted(items, key=lambda item: item["subtitle"])
+    return items
 
 def currencies_filter(query, abbreviation, currency, favorite=None):
     """Return true if query satisfy certain criterias"""

@@ -1,134 +1,159 @@
 """Function to be called by workflow"""
+import os
+from datetime import datetime
 from .query import Query
-from .utils import load_config, load_rates, load_currencies, calculate, currencies_filter
-from .workflow import ICON_WARNING
+from .utils import (
+    load_rates,
+    load_currencies,
+    refresh_rates,
+    refresh_currencies,
+    calculate,
+    generate_items,
+    currencies_filter
+)
 
 __all__ = [
-    "load_all_currencies",
-    "load_favorite_currencies",
+    "load",
     "convert",
     "add",
     "remove",
-    "move",
-    "base",
+    "arrange",
+    "save_arrange",
+    "refresh",
     "help_me"
 ]
 
-def load_all_currencies(workflow):
-    """Load all available currencies"""
-    settings = workflow.settings
-    config = load_config()
+def load(workflow):
+    """Load all/favorites currencies"""
     currencies = load_currencies()
-    if len(workflow.args) > 2:
-        raise ValueError("One Currency at a time, please")
-    args = workflow.args[1:]
+    if len(workflow.args) > 3:
+        workflow.add_item(title="One Currency at a time, please",
+                          icon="hints/cancel.png")
+        workflow.send_feedback()
+        return None
+    load_type = str(workflow.args[1])
+    workflow.logger.info(load_type)
+    args = workflow.args[2:]
     query = "" if not args else str(args[0]).upper()
-    # TODO: Try implement this after Python 3 Support
-    # abb_filtered = workflow.filter(query, currencies.items(), key=lambda item: item[0])
-    # cur_filtered = workflow.filter(query, currencies.items(), key=lambda item: item[1])
-    # items = list(set(abb_filtered).union(set(cur_filtered)))
-    # for abbreviation, currency in items:
-    #     workflow.add_item(title=currency,
-    #                       subtitle=abbreviation,
-    #                       icon="icons/{0}.png".format(abbreviation),
-    #                       valid=True,
-    #                       arg=abbreviation)
-    items = []
-    for abbreviation, currency in currencies.items():
-        if currencies_filter(query, abbreviation, currency, settings["currencies"]):
-            items.append({
-                "title": currency,
-                "subtitle": abbreviation,
-                "icon": "icons/{0}.png".format(abbreviation),
-                "valid": True,
-                "arg": abbreviation
-            })
-    items = sorted(items, key=lambda item: item["subtitle"])
+    if load_type == "all":
+        items = generate_items(query, currencies.keys(), workflow.settings["currencies"], True)
+    elif load_type == "favorites":
+        items = generate_items(query, workflow.settings["currencies"])
+    if os.getenv("redirect"):
+        workflow.add_item(title="Done",
+                          subtitle="Dismiss",
+                          icon="hints/save.png",
+                          valid=True,
+                          arg="quit")
     for item in items:
-        workflow.add_item(**item)
+        item = workflow.add_item(**item)
+        item.setvar("redirect", True)
     if not items:
         workflow.add_item(title="No Currency Found...",
                           subtitle="Perhaps trying something else?",
-                          icon=ICON_WARNING)
-        workflow.add_item(title="Kindly Notice",
-                          subtitle="Your existed favorites won't show up in here",
-                          icon=ICON_WARNING)
-    workflow.send_feedback()
-
-def load_favorite_currencies(workflow):
-    """Load favorite currencies set in configs"""
-    settings = workflow.settings
-    config = load_config()
-    currencies = load_currencies()
-    if len(workflow.args) > 2:
-        raise ValueError("One Currency at a time, please")
-    args = workflow.args[1:]
-    query = "" if not args else str(args[0]).upper()
-    items = []
-    for abbreviation in settings[currencies]:
-        if currencies_filter(query, abbreviation, currencies[abbreviation]):
-            items.append({
-                "title": currencies[abbreviation],
-                "subtitle": abbreviation,
-                "icon": "icons/{0}.png".format(abbreviation),
-                "valid": True,
-                "arg": abbreviation
-            })
-    for item in items:
-        workflow.add_item(**item)
+                          icon="hints/info.png")
+        if load_type == "all":
+            workflow.add_item(title="Kindly Notice",
+                              subtitle="Your existed favorites won't show up in here",
+                              icon="hints/info.png")
     workflow.send_feedback()
 
 def convert(workflow):
     """Run conversion patterns"""
-    settings = workflow.settings
-    config = load_config()
-    rates = load_rates(settings)
-    query = Query(workflow.args[1:])
-    query.run_pattern(workflow, rates)
+    try:
+        rates = load_rates()
+        query = Query(workflow.args[1:])
+        query.run_pattern(workflow, rates)
+    except ValueError as error:
+        workflow.add_item(title=error.args[0],
+                          icon="hints/cancel.png")
+    except EnvironmentError as error:
+        workflow.logger.info(error)
+        workflow.add_item(title=error.args[0],
+                          subtitle=error.args[1],
+                          icon="hints/cancel.png")
     workflow.send_feedback()
 
 def add(workflow):
+    """Add currency to favorite list"""
     currency = workflow.args[1]
-
-    config = load_config()
-    config.currencies.append(currency)
-    config.save()
-
-    settings = workflow.settings
-    settings["currencies"].append(currency)
-    settings.save()
-
-    print(currency)
+    workflow.settings["currencies"].append(currency)
+    workflow.settings.save()
+    currencies = load_currencies()
+    print("{} ({})".format(currencies[currency], currency))
 
 def remove(workflow):
+    """Remove currency from favorite list"""
     currency = workflow.args[1]
+    workflow.settings["currencies"].remove(currency)
+    workflow.settings.save()
+    currencies = load_currencies()
+    print("{} ({})".format(currencies[currency], currency))
 
-    config = load_config()
-    config.currencies.remove(currency)
-    config.save()
-
-    settings = workflow.settings
-    settings["currencies"].remove(currency)
-    settings.save()
-
-    print(currency)
-
-def move(workflow):
+def arrange(workflow):
+    """Rearrange favorite currencies order"""
+    currencies = load_currencies()
+    favorites = workflow.settings["currencies"]
     args = workflow.args[1:]
+    if len(args) == len(favorites):
+        workflow.add_item(title="Save",
+                          subtitle="Save current arrangement",
+                          icon="hints/save.png",
+                          valid=True,
+                          arg="save {}".format(" ".join(args)))
+        workflow.add_item(title="Cancel",
+                          subtitle="Cancel the operation without saving",
+                          icon="hints/cancel.png",
+                          valid=True,
+                          arg="cancel {}".format(" ".join(args)))
+    for abbreviation in favorites:
+        if abbreviation not in args:
+            query = "{} {}".format(" ".join(args), abbreviation) if args else abbreviation
+            workflow.add_item(title=currencies[abbreviation],
+                              subtitle=abbreviation,
+                              icon="flags/{}.png".format(abbreviation),
+                              valid=True,
+                              arg=query,
+                              autocomplete=query)
+    if args:
+        workflow.add_item(title="---------- Begin New Arrangement ----------")
+    for arg in args:
+        if arg in favorites:
+            workflow.add_item(title=currencies[arg],
+                              subtitle=arg,
+                              icon="flags/{}.png".format(arg))
+        else:
+            workflow.add_item(title="Currency {} isn't in favortie list".format(arg),
+                              icon="hints/cancel.png")
+            workflow.send_feedback()
+            return None
+    if args:
+        workflow.add_item(title="---------- End New Arrangement ----------")
+    workflow.add_item(title="To insert, press Return or Tab on selected item",
+                      icon="hints/info.png")
+    workflow.add_item(title="To remove last item, press Option-Delete",
+                      icon="hints/info.png")
+    workflow.send_feedback()
 
-def base(workflow):
-    currency = workflow.args[1]
+def save_arrange(workflow):
+    """Save new favorite arrangement"""
+    args = workflow.args[2:]
+    workflow.logger.info(args)
+    workflow.settings["currencies"] = [str(arg) for arg in args]
+    print(" ".join(args))
 
-    config = load_config()
-    config.base = currency
-    config.save()
-
-    settings = workflow.settings
-    settings["base"] = currency
-
-    print(currency)
+def refresh(workflow):
+    """Manually trigger rates refresh"""
+    try:
+        refresh_rates()
+        refresh_currencies()
+    except EnvironmentError as error:
+        print(error.args[0])
+    else:
+        print(str(datetime.now()))
 
 def help_me(workflow):
+    """Function for showing example usage"""
     workflow.add_item(title="cur",
                       subtitle="Convert 1 unit of all favorite currencies to base currency",
                       valid=True,
@@ -153,4 +178,29 @@ def help_me(workflow):
                       subtitle="Convert between <currency_1> and <currency_2> with <value> unit",
                       valid=True,
                       arg="cur 5 GBP CAD")
+    workflow.add_item(title="cur-add CAD",
+                      subtitle="Add CAD to favorite list",
+                      icon="hints/gear.png",
+                      valid=True,
+                      arg="cur-add CAD")
+    workflow.add_item(title="cur-rm GBP",
+                      subtitle="Remove GBP from favorite list",
+                      icon="hints/gear.png",
+                      valid=True,
+                      arg="cur-rm GBP")
+    workflow.add_item(title="cur-arr",
+                      subtitle="Arrange orders of the favorite list",
+                      icon="hints/gear.png",
+                      valid=True,
+                      arg="cur-arr")
+    workflow.add_item(title="cur-ref",
+                      subtitle="Refresh Currency List & Rates",
+                      icon="hints/gear.png",
+                      valid=True,
+                      arg="cur-ref")
+    workflow.add_item(title="Documentation",
+                      subtitle="Select this to find out more comprehensive documentation",
+                      icon="hints/info.png",
+                      valid=True,
+                      arg="cur workflow:help")
     workflow.send_feedback()
