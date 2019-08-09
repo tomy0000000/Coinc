@@ -36,7 +36,7 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 ### Config & Settings
 
 * Config can be set in [workflow environment variables sheet](https://www.alfredapp.com/help/workflows/advanced/variables/#environment), by pressing `[x]` icon in Alfred Preferences
-* Settings is a json file located at `~/Library/Application Support/Alfred/Workflow Data/tech.tomy.currencyconverter`, or type the magic arguments `cur workflow:opendata` in Alfred will take you diractly to that diractory
+* Settings is a json file located at `~/Library/Application Support/Alfred/Workflow Data/tech.tomy.coon`, or type the magic arguments `cur workflow:opendata` in Alfred will take you diractly to that diractory
 * Please setup your `APP_ID` before your first run, otherwise this workflow won't even work, at all.
 
 | Type     | Name        | Function                                                     | Default                        |
