@@ -30,8 +30,11 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 ### Installation
 
-* Head overto [Releases](https://github.com/tomy0000000/coon/releases), download the latest version
+* Head overto [Releases](https://github.com/tomy0000000/Coon/releases), download the latest version
 * Double-click on `Coon.alfredworkflow` to install
+* Auto-Update of workflow is enabled by default, but can be switch by sending query
+  * `cur workflow:autoupdate` for enabling Auto-Update
+  * `cur workflow:noautoupdate` for disabling Auto-Update
 
 ### Config & Settings
 
@@ -53,9 +56,9 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 The following examples demonstrate the usage with the default config and settings
 
-* `cur`: Convert 1 unit of all favorite currencies to base currency
+* `cur`: Convert between all favorite currencies and base currency with 1 unit
 ![cur](assets/cur.png)
-* `cur [value]`: Convert all favorite currencies with [value] to base currency
+* `cur [value]`: Convert between all favorite currencies and base currency with [value] unit
 ![cur 200](assets/cur%20200.png)
 * `cur [currency]`: Convert between [currency] and base currency with 1 unit
 ![cur GBP](assets/cur%20GBP.png)
@@ -107,4 +110,4 @@ See [Currencies](./Currencies.md)
 | Feathercoin (FTC) | FeatherCoin/Feathercoin     | [GitHub](https://github.com/FeatherCoin/Feathercoin)         |
 | VertCoin (VTC)    | vertcoin-project/VertDocs   | [GitHub](https://github.com/vertcoin-project/VertDocs)       |
 
-* Any source code unmentioned above are released under the [MIT license](https://github.com/tomy0000000/coon/blob/master/LICENSE)
+* Any source code unmentioned above are released under the [MIT license](https://github.com/tomy0000000/Coon/blob/master/LICENSE)

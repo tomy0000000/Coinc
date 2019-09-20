@@ -155,11 +155,11 @@ def refresh(workflow):
 def help_me(workflow):
     """Function for showing example usage"""
     workflow.add_item(title="cur",
-                      subtitle="Convert 1 unit of all favorite currencies to base currency",
+                      subtitle="Convert between all favorite currencies and base currency with 1 unit",
                       valid=True,
                       arg="cur")
     workflow.add_item(title="cur 200",
-                      subtitle="Convert all favorite currencies with <value> to base currency",
+                      subtitle="Convert between all favorite currencies and base currency with <value> unit",
                       valid=True,
                       arg="cur 200")
     workflow.add_item(title="cur GBP",

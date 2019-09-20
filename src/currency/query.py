@@ -75,43 +75,50 @@ class Query():
     def pattern_0(self, workflow, rates):
         """
         Method 0
-        Convert 1 unit of all favorite currencies to base currency
+        Convert between all favorite currencies and base currency with 1 unit
         """
         config = Config()
         settings = workflow.settings
         for currency in settings["favorites"]:
             converted = calculate(1, currency, config.base, rates)
-            item = workflow.add_item(title="1 {} = {} {}".format(currency, converted, config.base),
-                                     subtitle="Last Update: {}".format(rates["last_update"]),
-                                     icon="flags/{}.png".format(currency),
-                                     valid=True,
-                                     arg=str(converted),
-                                     copytext=str(converted))
-            # item.add_modifier(key="cmd",
+            item_1 = workflow.add_item(title="1 {} = {} {}".format(currency, converted, config.base),
+                                       subtitle="Last Update: {}".format(rates["last_update"]),
+                                       icon="flags/{}.png".format(currency),
+                                       valid=True,
+                                       arg=str(converted),
+                                       copytext=str(converted))
+            # item_1.add_modifier(key="cmd",
             #                   subtitle="cmd-subtitle",
             #                   valid=True,
             #                   arg=str(converted))
-            # item.add_modifier(key="alt",
+            # item_1.add_modifier(key="alt",
             #                   subtitle="alt-subtitle",
             #                   valid=True,
             #                   arg=str(converted))
-            # item.add_modifier(key="ctrl",
+            # item_1.add_modifier(key="ctrl",
             #                   subtitle="ctrl-subtitle",
             #                   valid=True,
             #                   arg=str(converted))
-            # item.add_modifier(key="shift",
+            # item_1.add_modifier(key="shift",
             #                   subtitle="shift-subtitle",
             #                   valid=True,
             #                   arg=str(converted))
-            # item.add_modifier(key="fn",
+            # item_1.add_modifier(key="fn",
             #                   subtitle="fn-subtitle",
             #                   valid=True,
             #                   arg=str(converted))
+            converted = calculate(1, config.base, currency, rates)
+            item_2 = workflow.add_item(title="1 {} = {} {}".format(config.base, converted, currency),
+                                       subtitle="Last Update: {}".format(rates["last_update"]),
+                                       icon="flags/{}.png".format(currency),
+                                       valid=True,
+                                       arg=str(converted),
+                                       copytext=str(converted))
     def pattern_1(self, workflow, rates):
         """
         Method 1
         100 (value)
-        Convert all currencies with value (value) to base
+        Convert between all favorite currencies and base currency with [value] unit
         """
         config = Config()
         settings = workflow.settings
@@ -119,6 +126,13 @@ class Query():
             converted = calculate(self.value, currency, config.base, rates)
             workflow.add_item(title="{} {} = {} {}".format(
                 self.value, currency, converted, config.base),
+                              subtitle="Last Update: {}".format(rates["last_update"]),
+                              icon="flags/{}.png".format(currency),
+                              valid=True,
+                              arg=str(converted))
+            converted = calculate(self.value, config.base, currency, rates)
+            workflow.add_item(title="{} {} = {} {}".format(
+                self.value, config.base, converted, currency),
                               subtitle="Last Update: {}".format(rates["last_update"]),
                               icon="flags/{}.png".format(currency),
                               valid=True,
