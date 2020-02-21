@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Helper Functions"""
 import json
 import os
@@ -8,15 +9,29 @@ import time
 RATE_ENDPOINT = "https://openexchangerates.org/api/latest.json?show_alternative=1&app_id={}"
 CURRENCY_ENDPOINT = "https://openexchangerates.org/api/currencies.json?show_alternative=1"
 
-def byteify(loaded_dict):
+
+def _byteify(loaded_dict):
     if isinstance(loaded_dict, dict):
-        return {byteify(key): byteify(value)
-                for key, value in loaded_dict.iteritems()}
+        return {
+            _byteify(key): _byteify(value)
+            for key, value in loaded_dict.iteritems()
+        }
     if isinstance(loaded_dict, list):
-        return [byteify(element) for element in loaded_dict]
+        return [_byteify(element) for element in loaded_dict]
     if isinstance(loaded_dict, unicode):
         return loaded_dict.encode("utf-8")
     return loaded_dict
+
+
+def is_it_currency_symbol(query):
+    """Check if query is a valid currency symbol"""
+    symbols = load_currency_symbols()
+    if sys.version_info.major == 2:
+        query = query.encode("utf-8")
+    if query in symbols:
+        return symbols[query]
+    return None
+
 
 def is_it_currency(query):
     """Check if query is a valid currency"""
@@ -26,22 +41,59 @@ def is_it_currency(query):
         return query
     return None
 
+
 def is_it_float(query):
     """Check if query is a valid number"""
     try:
-        return float(query)
+        return float(query.replace(",", ""))
     except ValueError:
         return None
 
+
 def is_it_something_mixed(query):
     """Check if query is Mixed with value and currency"""
-    match_result = re.match(r"^(\d*(\.\d+)?)([A-Z_]*)$", query.upper())
+
+    # Type 1: {number}{currency}
+    match_result = re.match(r"^([0-9,]+(\.\d+)?)([A-Z_]+)$", query.upper())
     if match_result:
         value = is_it_float(match_result.groups()[0])
         currency = is_it_currency(match_result.groups()[2])
         if value and currency:
             return (value, currency)
+
+    # Type 2: {currency}{number}
+    match_result = re.match(r"^([A-Z_]+)([0-9,]+(\.\d+)?)$", query.upper())
+    if match_result:
+        value = is_it_float(match_result.groups()[1])
+        currency = is_it_currency(match_result.groups()[0])
+        if value and currency:
+            return (value, currency)
+
+    # Type 3: {symbol}{number}
+    match_result = re.match(r"^(.+?)([0-9,]+(\.\d+)?)$",
+                            query)  # Use '+?' for non-progressive match
+    if match_result:
+        value = is_it_float(match_result.groups()[1])
+        currency_symbol = is_it_currency_symbol(match_result.groups()[0])
+        if value and currency_symbol:
+            return (value, currency_symbol)
+
     return None
+
+
+def load_currency_symbols(path="symbols.json"):
+    """Load currency symbols, return empty dict if file not found"""
+    if not os.path.exists(path):
+        return {}
+    with open(path) as file:
+        if sys.version_info.major == 2:
+            symbols = _byteify(json.load(file, "utf-8"))
+        elif sys.version_info.major == 3:
+            symbols = json.load(file)
+        else:
+            raise RuntimeError("Unexpected Python Version")
+        return symbols
+
 
 def load_currencies(path="currencies.json"):
     """Load currencies, create one if not exists"""
@@ -49,28 +101,38 @@ def load_currencies(path="currencies.json"):
         return refresh_currencies(path)
     with open(path) as file:
         if sys.version_info.major == 2:
-            currencies = byteify(json.load(file, "utf-8"))
+            currencies = _byteify(json.load(file, "utf-8"))
         elif sys.version_info.major == 3:
             currencies = json.load(file)
         else:
             raise RuntimeError("Unexpected Python Version")
         return currencies
 
+
 def refresh_currencies(path="currencies.json"):
     """Fetch the newest currency list"""
     if sys.version_info.major == 2:
         import urllib2
-        response = urllib2.urlopen(CURRENCY_ENDPOINT)
-        currencies = byteify(json.load(response, "utf-8"))
+        try:
+            response = urllib2.urlopen(CURRENCY_ENDPOINT)
+        except urllib2.HTTPError as err:
+            response = _byteify(json.load(err, "utf-8"))
+            raise EnvironmentError("Unexpected Error", response["description"])
+        currencies = _byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
-        import urllib.request
-        response = urllib.request.urlopen(CURRENCY_ENDPOINT)
+        from urllib import request, error
+        try:
+            response = request.urlopen(CURRENCY_ENDPOINT)
+        except error.HTTPError as err:
+            response = json.load(err)
+            raise EnvironmentError("Unexpected Error", response["description"])
         currencies = json.load(response)
     else:
         raise RuntimeError("Unexpected Python Version")
     with open(path, "w+") as file:
         json.dump(currencies, file)
     return currencies
+
 
 def load_rates(path="rates.json"):
     """Load rates, update if not exist or too-old"""
@@ -79,13 +141,14 @@ def load_rates(path="rates.json"):
     if not os.path.exists(path):
         return refresh_rates(path)
     with open(path) as file:
-        rates = byteify(json.load(file, "utf-8"))
+        rates = _byteify(json.load(file, "utf-8"))
     last_update = int(time.time() - os.path.getmtime(path))
     if config.expire < last_update:
         return refresh_rates(path)
     # inject rates file modification datetime
     rates["rates"]["last_update"] = "{} seconds ago".format(last_update)
     return rates["rates"]
+
 
 def refresh_rates(path="rates.json"):
     """Update rates with API"""
@@ -95,20 +158,35 @@ def refresh_rates(path="rates.json"):
         import urllib2
         try:
             response = urllib2.urlopen(RATE_ENDPOINT.format(config.app_id))
-        except urllib2.HTTPError:
-            raise EnvironmentError(
-                "Invalid App ID: {}".format(config.app_id),
-                "Fix this in workflow environment variables sheet in Alfred Preferences")
-        rates = byteify(json.load(response, "utf-8"))
+        except urllib2.HTTPError as err:
+            response = _byteify(json.load(err, "utf-8"))
+            if err.code == 401:
+                raise EnvironmentError(
+                    "Invalid App ID: {}".format(config.app_id),
+                    response["description"])
+            elif err.code == 429:
+                raise EnvironmentError("Access Restricted",
+                                       response["description"])
+            else:
+                raise EnvironmentError("Unexpected Error",
+                                       response["description"])
+        rates = _byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
-        import urllib.request
-        from urllib.error import HTTPError
+        from urllib import request, error
         try:
-            response = urllib.request.urlopen(RATE_ENDPOINT.format(config.app_id))
-        except HTTPError:
-            raise EnvironmentError(
-                "Invalid App ID: {}".format(config.app_id),
-                "Fix this in workflow environment variables sheet in Alfred Preferences")
+            response = request.urlopen(RATE_ENDPOINT.format(config.app_id))
+        except error.HTTPError as err:
+            response = json.load(err)
+            if err.code == 401:
+                raise EnvironmentError(
+                    "Invalid App ID: {}".format(config.app_id),
+                    response["description"])
+            elif err.code == 429:
+                raise EnvironmentError("Access Restricted",
+                                       response["description"])
+            else:
+                raise EnvironmentError("Unexpected Error",
+                                       response["description"])
         rates = json.load(response)
     else:
         raise RuntimeError("Unexpected Python Version")
@@ -117,19 +195,21 @@ def refresh_rates(path="rates.json"):
     rates["rates"]["last_update"] = "Now"
     return rates["rates"]
 
+
 def calculate(value, from_currency, to_currency, rates):
     """The Main Calculation of Conversion"""
     from .config import Config
     config = Config()
-    return round(
-        value * (rates[to_currency] / rates[from_currency]), config.precision
-    )
+    return round(value * (rates[to_currency] / rates[from_currency]),
+                 config.precision)
+
 
 def generate_items(query, raw_items, favorite_filter=None, sort=False):
     currencies = load_currencies()
     items = []
     for abbreviation in raw_items:
-        if currencies_filter(query, abbreviation, currencies[abbreviation], favorite_filter):
+        if currencies_filter(query, abbreviation, currencies[abbreviation],
+                             favorite_filter):
             items.append({
                 "title": currencies[abbreviation],
                 "subtitle": abbreviation,
@@ -140,6 +220,7 @@ def generate_items(query, raw_items, favorite_filter=None, sort=False):
     if sort:
         items = sorted(items, key=lambda item: item["subtitle"])
     return items
+
 
 def currencies_filter(query, abbreviation, currency, favorite=None):
     """Return true if query satisfy certain criterias"""

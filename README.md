@@ -40,7 +40,6 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 * Config can be set in [workflow environment variables sheet](https://www.alfredapp.com/help/workflows/advanced/variables/#environment), by pressing `[x]` icon in Alfred Preferences
 * Settings is a json file located at `~/Library/Application Support/Alfred/Workflow Data/tech.tomy.coon`, or type the magic arguments `cur workflow:opendata` in Alfred will take you diractly to that diractory
-* Please setup your `APP_ID` before your first run, otherwise this workflow won't even work, at all.
 
 | Type     | Name        | Function                                                     | Default                        |
 | -------- | ----------- | ------------------------------------------------------------ | ------------------------------ |
@@ -49,6 +48,12 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 | Config   | `EXPIRE`    | Threshold to trigger rates update in seconds                 | `300`                          |
 | Config   | `BASE`      | Your primary, daily-use currency                             | `USD`                          |
 | Settings | `favorites` | Favorite conversion list                                     | `["EUR", "CNY", "JPY", "GBP"]` |
+
+#### `APP_ID`
+
+* Can be obtain at [Open Exchange Rates](https://openexchangerates.org/) for free by sign up an account. (Don't worry, you can delete the account if you change your mind)
+
+* Setup your `APP_ID` prior to your first run, otherwise this workflow won't even work at all.
 
 ## User Guide
 

@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 """Script for Default keyword"""
 import sys
 import currency
 from currency.workflow import Workflow3
+
 
 def main(workflow):
     """The main workflow entry function"""
@@ -11,11 +13,10 @@ def main(workflow):
     else:
         workflow.run(currency.help_me)
 
+
 if __name__ == "__main__":
     WF = Workflow3(
-        default_settings={
-            "favorites": ["EUR", "CNY", "JPY", "GBP"]
-        },
+        default_settings={"favorites": ["EUR", "CNY", "JPY", "GBP"]},
         update_settings={
             "github_slug": "tomy0000000/coon",
             "frequency": 7

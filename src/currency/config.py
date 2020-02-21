@@ -1,16 +1,19 @@
+# -*- coding: utf-8 -*-
 """Helper class for loading config set in Alfred Variable Sheet"""
 import os
 from .utils import load_currencies
 
+
 class Config():
-    """Helper class for loading config set in Alfred Variable Sheet"""
+    """Helper class for loading config set in Alfred Environment Variables Sheet"""
     def __init__(self):
         # App_ID
         app_id = os.getenv("APP_ID")
         if not app_id:
             raise EnvironmentError(
                 "Please setup APP_ID to refresh new rates",
-                "Paste your App ID into workflow environment variables sheet in Alfred Preferences")
+                "Paste your App ID into workflow environment variables sheet in Alfred Preferences"
+            )
         self.app_id = app_id
         # Base
         base_raw = os.getenv("BASE")
@@ -23,7 +26,8 @@ class Config():
             else:
                 raise EnvironmentError(
                     "Invalid base currency: {}".format(base_raw),
-                    "Fix this in workflow environment variables sheet in Alfred Preferences")
+                    "Fix this in workflow environment variables sheet in Alfred Preferences"
+                )
         # Expire
         expire_raw = os.getenv("EXPIRE")
         if not expire_raw:
@@ -34,7 +38,8 @@ class Config():
             except Exception:
                 raise EnvironmentError(
                     "Invalid expire value: {}".format(expire_raw),
-                    "Fix this in workflow environment variables sheet in Alfred Preferences")
+                    "Fix this in workflow environment variables sheet in Alfred Preferences"
+                )
         # Precision
         precision_raw = os.getenv("PRECISION")
         if not precision_raw:
@@ -45,4 +50,5 @@ class Config():
             except Exception:
                 raise EnvironmentError(
                     "Invalid precision value: {}".format(precision_raw),
-                    "Fix this in workflow environment variables sheet in Alfred Preferences")
+                    "Fix this in workflow environment variables sheet in Alfred Preferences"
+                )
