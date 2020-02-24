@@ -94,42 +94,44 @@ class Query():
         settings = workflow.settings
         for currency in settings["favorites"]:
             converted = calculate(1, currency, config.base, rates)
-            item_1 = workflow.add_item(
-                title="1 {} = {} {}".format(currency, converted, config.base),
-                subtitle="Last Update: {}".format(rates["last_update"]),
-                icon="flags/{}.png".format(currency),
-                valid=True,
-                arg=str(converted),
-                copytext=str(converted))
-            # item_1.add_modifier(key="cmd",
-            #                   subtitle="cmd-subtitle",
-            #                   icon="flags/{}.png".format(currency),
-            #                   valid=True,
-            #                   arg="${}".format(str(converted)))
-            # item_1.add_modifier(key="alt",
-            #                   subtitle="alt-subtitle",
-            #                   valid=True,
-            #                   arg=str(converted))
-            # item_1.add_modifier(key="ctrl",
-            #                   subtitle="ctrl-subtitle",
-            #                   valid=True,
-            #                   arg=str(converted))
-            # item_1.add_modifier(key="shift",
-            #                   subtitle="shift-subtitle",
-            #                   valid=True,
-            #                   arg=str(converted))
-            # item_1.add_modifier(key="fn",
-            #                   subtitle="fn-subtitle",
-            #                   valid=True,
-            #                   arg=str(converted))
-            converted = calculate(1, config.base, currency, rates)
-            item_2 = workflow.add_item(
-                title="1 {} = {} {}".format(config.base, converted, currency),
-                subtitle="Last Update: {}".format(rates["last_update"]),
-                icon="flags/{}.png".format(currency),
-                valid=True,
-                arg=str(converted),
-                copytext=str(converted))
+            if config.orientation in ["DEFAULT", "FROM_FAV"]:
+                item_1 = workflow.add_item(
+                    title="1 {} = {} {}".format(currency, converted, config.base),
+                    subtitle="Last Update: {}".format(rates["last_update"]),
+                    icon="flags/{}.png".format(currency),
+                    valid=True,
+                    arg=str(converted),
+                    copytext=str(converted))
+                # item_1.add_modifier(key="cmd",
+                #                   subtitle="cmd-subtitle",
+                #                   icon="flags/{}.png".format(currency),
+                #                   valid=True,
+                #                   arg="${}".format(str(converted)))
+                # item_1.add_modifier(key="alt",
+                #                   subtitle="alt-subtitle",
+                #                   valid=True,
+                #                   arg=str(converted))
+                # item_1.add_modifier(key="ctrl",
+                #                   subtitle="ctrl-subtitle",
+                #                   valid=True,
+                #                   arg=str(converted))
+                # item_1.add_modifier(key="shift",
+                #                   subtitle="shift-subtitle",
+                #                   valid=True,
+                #                   arg=str(converted))
+                # item_1.add_modifier(key="fn",
+                #                   subtitle="fn-subtitle",
+                #                   valid=True,
+                #                   arg=str(converted))
+            if config.orientation in ["DEFAULT", "TO_FAV"]:
+                converted = calculate(1, config.base, currency, rates)
+                item_2 = workflow.add_item(
+                    title="1 {} = {} {}".format(config.base, converted, currency),
+                    subtitle="Last Update: {}".format(rates["last_update"]),
+                    icon="flags/{}.png".format(currency),
+                    valid=True,
+                    arg=str(converted),
+                    copytext=str(converted))
 
     def pattern_1(self, workflow, rates):
         """
@@ -140,22 +142,24 @@ class Query():
         config = Config()
         settings = workflow.settings
         for currency in settings["favorites"]:
-            converted = calculate(self.value, currency, config.base, rates)
-            workflow.add_item(
-                title="{} {} = {} {}".format(self.value, currency, converted,
-                                             config.base),
-                subtitle="Last Update: {}".format(rates["last_update"]),
-                icon="flags/{}.png".format(currency),
-                valid=True,
-                arg=str(converted))
-            converted = calculate(self.value, config.base, currency, rates)
-            workflow.add_item(
-                title="{} {} = {} {}".format(self.value, config.base,
-                                             converted, currency),
-                subtitle="Last Update: {}".format(rates["last_update"]),
-                icon="flags/{}.png".format(currency),
-                valid=True,
-                arg=str(converted))
+            if config.orientation in ["DEFAULT", "FROM_FAV"]:
+                converted = calculate(self.value, currency, config.base, rates)
+                workflow.add_item(
+                    title="{} {} = {} {}".format(self.value, currency, converted,
+                                                 config.base),
+                    subtitle="Last Update: {}".format(rates["last_update"]),
+                    icon="flags/{}.png".format(currency),
+                    valid=True,
+                    arg=str(converted))
+            if config.orientation in ["DEFAULT", "TO_FAV"]:
+                converted = calculate(self.value, config.base, currency, rates)
+                workflow.add_item(
+                    title="{} {} = {} {}".format(self.value, config.base,
+                                                 converted, currency),
+                    subtitle="Last Update: {}".format(rates["last_update"]),
+                    icon="flags/{}.png".format(currency),
+                    valid=True,
+                    arg=str(converted))
 
     def pattern_2(self, workflow, rates):
         """

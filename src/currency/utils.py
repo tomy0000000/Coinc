@@ -2,9 +2,10 @@
 """Helper Functions"""
 import json
 import os
-import sys
 import re
+import sys
 import time
+import unicodedata
 
 RATE_ENDPOINT = "https://openexchangerates.org/api/latest.json?show_alternative=1&app_id={}"
 CURRENCY_ENDPOINT = "https://openexchangerates.org/api/currencies.json?show_alternative=1"
@@ -26,6 +27,8 @@ def _byteify(loaded_dict):
 def is_it_currency_symbol(query):
     """Check if query is a valid currency symbol"""
     symbols = load_currency_symbols()
+    # Full-width to half-width transition
+    query = unicodedata.normalize("NFKC", query)
     if sys.version_info.major == 2:
         query = query.encode("utf-8")
     if query in symbols:
