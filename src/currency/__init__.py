@@ -2,9 +2,10 @@
 """Function to be called by workflow"""
 import os
 from datetime import datetime
+from .exceptions import CoonError
 from .query import Query
-from .utils import (load_rates, load_currencies, refresh_rates,
-                    refresh_currencies, generate_items)
+from .utils import (load_currencies, refresh_rates, refresh_currencies,
+                    generate_list_items)
 
 __all__ = [
     "load", "convert", "add", "remove", "arrange", "save_arrange", "refresh",
@@ -24,17 +25,17 @@ def load(workflow):
     workflow.logger.info(load_type)
     args = workflow.args[2:]
     query = "" if not args else str(args[0]).upper()
-    if load_type == "all":
-        items = generate_items(query, currencies.keys(),
-                               workflow.settings["favorites"], True)
-    elif load_type == "favorites":
-        items = generate_items(query, workflow.settings["favorites"])
     if os.getenv("redirect"):
         workflow.add_item(title="Done",
                           subtitle="Dismiss",
                           icon="hints/save.png",
                           valid=True,
                           arg="quit")
+    if load_type == "all":
+        items = generate_list_items(query, currencies.keys(),
+                                    workflow.settings["favorites"], True)
+    elif load_type == "favorites":
+        items = generate_list_items(query, workflow.settings["favorites"])
     for item in items:
         item = workflow.add_item(**item)
         item.setvar("redirect", True)
@@ -53,9 +54,8 @@ def load(workflow):
 def convert(workflow):
     """Run conversion patterns"""
     try:
-        rates = load_rates()
         query = Query(workflow.args[1:])
-        query.run_pattern(workflow, rates)
+        query.run_pattern(workflow)
     except ValueError as error:
         workflow.add_item(title=error.args[0], icon="hints/cancel.png")
     except EnvironmentError as error:
@@ -145,10 +145,15 @@ def refresh(workflow):
     try:
         refresh_rates()
         refresh_currencies()
-    except EnvironmentError as error:
-        print(error.args[0])
-    else:
-        print(str(datetime.now()))
+    except CoonError as error:
+        workflow.logger.info(error)
+        print("{},{}".format("❌Error occured during refresh",
+                             "Coon: {}".format(type(error).__name__)))
+    except Exception as error:
+        workflow.logger.info(error)
+        print("{},{}".format("❌Error occured during refresh",
+                             "Python: {}".format(type(error).__name__)))
+    print("{},{}".format("✅Currency list and rates have refreshed", str(datetime.now())))
 
 
 def help_me(workflow):

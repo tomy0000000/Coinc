@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Helper class for loading config set in Alfred Variable Sheet"""
 import os
+from .exceptions import ConfigError
 from .utils import load_currencies
 
 
@@ -10,7 +11,7 @@ class Config():
         # App_ID
         app_id = os.getenv("APP_ID")
         if not app_id:
-            raise EnvironmentError(
+            raise ConfigError(
                 "Please setup APP_ID to refresh new rates",
                 "Paste your App ID into workflow environment variables sheet in Alfred Preferences"
             )
@@ -21,7 +22,7 @@ class Config():
         if base_raw.upper() in currencies:
             self.base = base_raw.upper()
         else:
-            raise EnvironmentError(
+            raise ConfigError(
                 "Invalid base currency: {}".format(base_raw),
                 "Fix this in workflow environment variables sheet in Alfred Preferences"
             )
@@ -29,8 +30,8 @@ class Config():
         expire_raw = os.getenv("EXPIRE", 300)
         try:
             self.expire = int(expire_raw)
-        except Exception:
-            raise EnvironmentError(
+        except ValueError:
+            raise ConfigError(
                 "Invalid expire value: {}".format(expire_raw),
                 "Fix this in workflow environment variables sheet in Alfred Preferences"
             )
@@ -40,7 +41,7 @@ class Config():
         if orientation_raw.replace(" ", "_").upper() in VALID:
             self.orientation = orientation_raw.replace(" ", "_").upper()
         else:
-            raise EnvironmentError(
+            raise ConfigError(
                 "Invalid orientation value: {}".format(orientation_raw),
                 "Fix this in workflow environment variables sheet in Alfred Preferences"
             )
@@ -48,8 +49,8 @@ class Config():
         precision_raw = os.getenv("PRECISION", 2)
         try:
             self.precision = int(precision_raw)
-        except Exception:
-            raise EnvironmentError(
+        except ValueError:
+            raise ConfigError(
                 "Invalid precision value: {}".format(precision_raw),
                 "Fix this in workflow environment variables sheet in Alfred Preferences"
             )

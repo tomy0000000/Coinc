@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Parse query into machine-readable format"""
 from .config import Config
-from .utils import (is_it_float, is_it_currency, is_it_currency_symbol,
-                    is_it_something_mixed, calculate, load_currencies,
-                    currencies_filter)
+from .exceptions import QueryError
+from .utils import (is_it_float, is_it_currency, is_it_symbol,
+                    is_it_something_mixed, load_currencies, load_rates,
+                    currencies_filter, generate_result_items)
 
 
 class Query():
@@ -13,6 +14,7 @@ class Query():
         self.currency_one = None
         self.currency_two = None
         self.bit_pattern = 0
+        self.binding = False
         invalids = []
         for arg in args:
             value = is_it_float(arg)
@@ -23,14 +25,15 @@ class Query():
             if currency:
                 self.fill_currency(currency)
                 continue
-            symbol_currency = is_it_currency_symbol(arg)
-            if symbol_currency:
-                self.fill_currency(symbol_currency)
+            symbol = is_it_symbol(arg)
+            if symbol:
+                self.fill_currency(symbol)
                 continue
             mixed = is_it_something_mixed(arg)
             if mixed:
                 self.fill_value(mixed[0])
-                self.fill_currency(mixed[1])
+                self.fill_currency(mixed[1], inplace=True)
+                self.binding = True
                 continue
             invalids.append(arg)
         if len(args) == 1 and self.bit_pattern == 0:
@@ -38,13 +41,13 @@ class Query():
             try:
                 self.currency_two = str(args[0])
             except UnicodeEncodeError:
-                raise ValueError(u"Invalid Currency: {}".format(args[0]))
+                raise QueryError(u"Invalid Currency: {}".format(args[0]))
             self.bit_pattern += 4
         elif invalids:
             if len(invalids) == 1:
-                raise ValueError(u"Invalid Currency: {}".format(invalids[0]))
+                raise QueryError(u"Invalid Currency: {}".format(invalids[0]))
             else:
-                raise ValueError(u"Invalid Currencies: {}".format(
+                raise QueryError(u"Invalid Currencies: {}".format(
                     ", ".join(invalids)))
 
     def fill_value(self, value):
@@ -53,21 +56,23 @@ class Query():
             self.value = value
             self.bit_pattern += 1
             return value
-        raise ValueError("Too many Value")
+        raise QueryError("Too many Value")
 
-    def fill_currency(self, currency):
+    def fill_currency(self, currency, inplace=False):
         """Fill currency into proper position"""
         if not self.currency_one:
             self.currency_one = str(currency)
             self.bit_pattern += 2
             return currency
+        if inplace and self.currency_one:
+            currency, self.currency_one = self.currency_one, currency
         if not self.currency_two:
             self.currency_two = str(currency)
             self.bit_pattern += 4
             return currency
-        raise ValueError("Too many Currencies")
+        raise QueryError("Too many Currencies")
 
-    def run_pattern(self, workflow, rates):
+    def run_pattern(self, workflow):
         """
         Run Correspond Function by Pattern
         | Pattern | currency_two | currency_one | value |
@@ -83,57 +88,29 @@ class Query():
         """
         workflow.logger.info("Run Pattern {}".format(self.bit_pattern))
         func = getattr(self, "pattern_{}".format(self.bit_pattern))
-        func(workflow, rates)
+        func(workflow)
 
-    def pattern_0(self, workflow, rates):
+    def pattern_0(self, workflow):
         """
         Method 0
         Convert between all favorite currencies and base currency with 1 unit
         """
         config = Config()
         settings = workflow.settings
+        rates = load_rates()
+        # Show rates update time
+        workflow.add_item(title="Last Update",
+                          subtitle=rates["last_update"],
+                          icon="hints/info.png")
         for currency in settings["favorites"]:
-            converted = calculate(1, currency, config.base, rates)
             if config.orientation in ["DEFAULT", "FROM_FAV"]:
-                item_1 = workflow.add_item(
-                    title="1 {} = {} {}".format(currency, converted, config.base),
-                    subtitle="Last Update: {}".format(rates["last_update"]),
-                    icon="flags/{}.png".format(currency),
-                    valid=True,
-                    arg=str(converted),
-                    copytext=str(converted))
-                # item_1.add_modifier(key="cmd",
-                #                   subtitle="cmd-subtitle",
-                #                   icon="flags/{}.png".format(currency),
-                #                   valid=True,
-                #                   arg="${}".format(str(converted)))
-                # item_1.add_modifier(key="alt",
-                #                   subtitle="alt-subtitle",
-                #                   valid=True,
-                #                   arg=str(converted))
-                # item_1.add_modifier(key="ctrl",
-                #                   subtitle="ctrl-subtitle",
-                #                   valid=True,
-                #                   arg=str(converted))
-                # item_1.add_modifier(key="shift",
-                #                   subtitle="shift-subtitle",
-                #                   valid=True,
-                #                   arg=str(converted))
-                # item_1.add_modifier(key="fn",
-                #                   subtitle="fn-subtitle",
-                #                   valid=True,
-                #                   arg=str(converted))
+                generate_result_items(workflow, 1, currency, config.base,
+                                      rates, currency)
             if config.orientation in ["DEFAULT", "TO_FAV"]:
-                converted = calculate(1, config.base, currency, rates)
-                item_2 = workflow.add_item(
-                    title="1 {} = {} {}".format(config.base, converted, currency),
-                    subtitle="Last Update: {}".format(rates["last_update"]),
-                    icon="flags/{}.png".format(currency),
-                    valid=True,
-                    arg=str(converted),
-                    copytext=str(converted))
+                generate_result_items(workflow, 1, config.base, currency,
+                                      rates, currency)
 
-    def pattern_1(self, workflow, rates):
+    def pattern_1(self, workflow):
         """
         Method 1
         100 (value)
@@ -141,27 +118,20 @@ class Query():
         """
         config = Config()
         settings = workflow.settings
+        rates = load_rates()
+        # Show rates update time
+        workflow.add_item(title="Last Update",
+                          subtitle=rates["last_update"],
+                          icon="hints/info.png")
         for currency in settings["favorites"]:
             if config.orientation in ["DEFAULT", "FROM_FAV"]:
-                converted = calculate(self.value, currency, config.base, rates)
-                workflow.add_item(
-                    title="{} {} = {} {}".format(self.value, currency, converted,
-                                                 config.base),
-                    subtitle="Last Update: {}".format(rates["last_update"]),
-                    icon="flags/{}.png".format(currency),
-                    valid=True,
-                    arg=str(converted))
+                generate_result_items(workflow, self.value, currency,
+                                      config.base, rates, currency)
             if config.orientation in ["DEFAULT", "TO_FAV"]:
-                converted = calculate(self.value, config.base, currency, rates)
-                workflow.add_item(
-                    title="{} {} = {} {}".format(self.value, config.base,
-                                                 converted, currency),
-                    subtitle="Last Update: {}".format(rates["last_update"]),
-                    icon="flags/{}.png".format(currency),
-                    valid=True,
-                    arg=str(converted))
+                generate_result_items(workflow, self.value, config.base,
+                                      currency, rates, currency)
 
-    def pattern_2(self, workflow, rates):
+    def pattern_2(self, workflow):
         """
         Method 2
         GBP (currency)
@@ -169,51 +139,28 @@ class Query():
         Convert 1 (base) to (currency)
         """
         config = Config()
-        converted_one = calculate(1, self.currency_one, config.base, rates)
-        workflow.add_item(
-            title="1 {} = {} {}".format(self.currency_one, converted_one,
-                                        config.base),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_one),
-            valid=True,
-            arg=str(converted_one))
-        converted_two = calculate(1, config.base, self.currency_one, rates)
-        workflow.add_item(
-            title="1 {} = {} {}".format(config.base, converted_two,
-                                        self.currency_one),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_one),
-            valid=True,
-            arg=str(converted_two))
+        rates = load_rates()
+        generate_result_items(workflow, 1, self.currency_one, config.base,
+                              rates, self.currency_one)
+        generate_result_items(workflow, 1, config.base, self.currency_one,
+                              rates, self.currency_one)
 
-    def pattern_3(self, workflow, rates):
+    def pattern_3(self, workflow):
         """
         Method 3
         5 GBP (value, currency)
         Convert 5 (currency) to (base)
-        Convert 5 (base) to (currency)
+        Convert 5 (base) to (currency) -> only show when not binding
         """
         config = Config()
-        converted_one = calculate(self.value, self.currency_one, config.base,
-                                  rates)
-        workflow.add_item(
-            title="{} {} = {} {}".format(self.value, self.currency_one,
-                                         converted_one, config.base),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_one),
-            valid=True,
-            arg=str(converted_one))
-        converted_two = calculate(self.value, config.base, self.currency_one,
-                                  rates)
-        workflow.add_item(
-            title="{} {} = {} {}".format(self.value, config.base,
-                                         converted_two, self.currency_one),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_one),
-            valid=True,
-            arg=str(converted_two))
+        rates = load_rates()
+        generate_result_items(workflow, self.value, self.currency_one,
+                              config.base, rates, self.currency_one)
+        if not self.binding:
+            generate_result_items(workflow, self.value, config.base,
+                                  self.currency_one, rates, self.currency_one)
 
-    def pattern_4(self, workflow, rates):
+    def pattern_4(self, workflow):
         """
         Method 4
         @#$ (broken currency)
@@ -225,8 +172,7 @@ class Query():
             if currencies_filter(self.currency_two, abbreviation, currency):
                 items.append(
                     dict(title=currency,
-                         subtitle="Last Update: {}".format(
-                             rates["last_update"]),
+                         subtitle=abbreviation,
                          icon="flags/{}.png".format(abbreviation),
                          valid=True,
                          autocomplete=abbreviation,
@@ -235,56 +181,31 @@ class Query():
         for item in items:
             workflow.add_item(**item)
         if not items:
-            raise ValueError("Invalid Currency: {}".format(self.currency_two))
+            raise QueryError(u"Invalid Currency: {}".format(self.currency_two))
 
-    def pattern_6(self, workflow, rates):
+    def pattern_6(self, workflow):
         """
         Method 6
         GBP CAD (currency_1, currency_2)
         Convert 1 (currency_1) to (currency_2)
         Convert 1 (currency_2) to (currency_1)
         """
-        converted_one = calculate(1, self.currency_one, self.currency_two,
-                                  rates)
-        workflow.add_item(
-            title="1 {} = {} {}".format(self.currency_one, converted_one,
-                                        self.currency_two),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_two),
-            valid=True,
-            arg=str(converted_one))
-        converted_two = calculate(1, self.currency_two, self.currency_one,
-                                  rates)
-        workflow.add_item(
-            title="1 {} = {} {}".format(self.currency_two, converted_two,
-                                        self.currency_one),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_one),
-            valid=True,
-            arg=str(converted_two))
+        rates = load_rates()
+        generate_result_items(workflow, 1, self.currency_one,
+                              self.currency_two, rates, self.currency_two)
+        generate_result_items(workflow, 1, self.currency_two,
+                              self.currency_one, rates, self.currency_one)
 
-    def pattern_7(self, workflow, rates):
+    def pattern_7(self, workflow):
         """
         Method 7
         5 GBP CAD (value, currency_1, currency_2)
         Convert (value) (currency_1) to (currency_2)
-        Convert (value) (currency_2) to (currency_1)
+        Convert (value) (currency_2) to (currency_1) -> only show when not binding
         """
-        converted_one = calculate(self.value, self.currency_one,
-                                  self.currency_two, rates)
-        workflow.add_item(
-            title="{} {} = {} {}".format(self.value, self.currency_one,
-                                         converted_one, self.currency_two),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_two),
-            valid=True,
-            arg=str(converted_one))
-        converted_two = calculate(self.value, self.currency_two,
-                                  self.currency_one, rates)
-        workflow.add_item(
-            title="{} {} = {} {}".format(self.value, self.currency_two,
-                                         converted_two, self.currency_one),
-            subtitle="Last Update: {}".format(rates["last_update"]),
-            icon="flags/{}.png".format(self.currency_one),
-            valid=True,
-            arg=str(converted_two))
+        rates = load_rates()
+        generate_result_items(workflow, self.value, self.currency_one,
+                              self.currency_two, rates, self.currency_two)
+        if not self.binding:
+            generate_result_items(workflow, self.value, self.currency_two,
+                                  self.currency_one, rates, self.currency_one)
