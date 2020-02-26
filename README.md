@@ -30,7 +30,7 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 ### Installation
 
-* Head overto [Releases](https://github.com/tomy0000000/Coon/releases), download the latest version
+* Head over to [Releases](https://github.com/tomy0000000/Coon/releases), download the latest version
 * Double-click on `Coon.alfredworkflow` to install
 * Auto-Update of workflow is enabled by default, but can be switch by sending query
   * `cur workflow:autoupdate` for enabling Auto-Update
@@ -40,15 +40,21 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 * Config can be set in [workflow environment variables sheet](https://www.alfredapp.com/help/workflows/advanced/variables/#environment), by pressing `[x]` icon in Alfred Preferences
 * Settings is a json file located at `~/Library/Application Support/Alfred/Workflow Data/tech.tomy.coon`, or type the magic arguments `cur workflow:opendata` in Alfred will take you diractly to that diractory
-* Please setup your `APP_ID` before your first run, otherwise this workflow won't even work, at all.
 
-| Type     | Name        | Function                                                     | Default                        |
-| -------- | ----------- | ------------------------------------------------------------ | ------------------------------ |
-| Config   | `APP_ID`    | Credentials to aquire currencies rates, can be obtain at [Open Exchange Rates](https://openexchangerates.org/) for free |                                |
-| Config   | `PRECISION` | Round off position after decimal point                       | `2`                            |
-| Config   | `EXPIRE`    | Threshold to trigger rates update in seconds                 | `300`                          |
-| Config   | `BASE`      | Your primary, daily-use currency                             | `USD`                          |
-| Settings | `favorites` | Favorite conversion list                                     | `["EUR", "CNY", "JPY", "GBP"]` |
+| Type     | Name          | Function                                                     | Default                        |
+| -------- | ------------- | ------------------------------------------------------------ | ------------------------------ |
+| Config   | `APP_ID`      | Credentials to aquire currencies rates, can be obtain at [Open Exchange Rates](https://openexchangerates.org/) for free |                                |
+| Config   | `BASE`        | Your primary, daily-use currency                             | `USD`                          |
+| Config   | `EXPIRE`      | Threshold to trigger rates update in seconds                 | `300`                          |
+| Config   | `ORIENTATION` |                                                              | `DEFAULT`                      |
+| Config   | `PRECISION`   | Round off position after decimal point                       | `2`                            |
+| Settings | `favorites`   | Favorite conversion list                                     | `["EUR", "CNY", "JPY", "GBP"]` |
+
+#### `APP_ID`
+
+* Can be obtain at [Open Exchange Rates](https://openexchangerates.org/) for free by sign up an account. (Don't worry, you can delete the account if you change your mind)
+
+* Setup your `APP_ID` prior to your first run, otherwise this workflow won't even work at all.
 
 ## User Guide
 
@@ -68,7 +74,7 @@ The following examples demonstrate the usage with the default config and setting
 ![cur GBP CAD](assets/cur%20GBP%20CAD.png)
 * `cur [value] [currency_1] [currency_2]`: Convert between [currency_1] and [currency_2] with [value] unit
 ![cur 5 GBP CAD](assets/cur%205%20GBP%20CAD.png)
-* Position-insensitive: besides the `cur` keyword, every parameter in the above methods are position-insensitive. Namely, the following query all outputs the same results:
+* Position-insensitive: besides the `cur` keyword, every parameter in the above methods are position-insensitive. Namely, the following query all yields the same results:
   * `cur 5 GBP CAD`
   * `cur 5 CAD GBP`
   * `cur GBP 5 CAD`
@@ -91,12 +97,14 @@ See [Currencies](./Currencies.md)
 
 ## Credit & License
 
-* This project is inspired by [FlyRabbit/alfred3-workflow-CurrencyX](https://github.com/FlyRabbit/alfred3-workflow-CurrencyX)
+* This project is inspired by [plummm/alfred3-workflow-CurrencyX](https://github.com/plummm/alfred3-workflow-CurrencyX)
 
   I made this spin-off because the original one doesn't work in the way I thought it should be. As I'm trying to tweaking the the old ones, things get more out of control which ended up me deciding to re-write my own version.
 
 * Core Library depends on the work-of-art-library: [deanishe/alfred-workflow](https://github.com/deanishe/alfred-workflow)
+
 * API provided by [Open Exchange Rates](https://openexchangerates.org/)
+
 * Icon licenses as below
 
 | Name              | Author                      | Source                                                       |
@@ -111,3 +119,4 @@ See [Currencies](./Currencies.md)
 | VertCoin (VTC)    | vertcoin-project/VertDocs   | [GitHub](https://github.com/vertcoin-project/VertDocs)       |
 
 * Any source code unmentioned above are released under the [MIT license](https://github.com/tomy0000000/Coon/blob/master/LICENSE)
+

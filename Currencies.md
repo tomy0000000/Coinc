@@ -1,207 +1,202 @@
 # Support Currencies
 
-This is a list of support currencies cloned in August, 2019 just for reference. Feel Free to use `Ctrl-F` or `Command-F` to search in this page. For Newest support currencies, please visit [Documentation of Open Exchange Rates](https://docs.openexchangerates.org/docs/supported-currencies).
+This is a list of support currencies cloned in August, 2019 just for reference. Feel Free to use `Command-F` to search in this page. For Newest support currencies, please visit [Documentation of Open Exchange Rates](https://docs.openexchangerates.org/docs/supported-currencies).
 
-## Fiat Currencies
+Please Note that Estonian Kroon (EEK) and Maltese Lira (MTL) is listed in Documentation of Open Exchange Rates, but did not actually provided for some reason.
 
-| Symbol | Name                                 |
-| ------ | ------------------------------------ |
-| AED    | United Arab Emirates Dirham          |
-| AFN    | Afghan Afghani                       |
-| ALL    | Albanian Lek                         |
-| AMD    | Armenian Dram                        |
-| ANG    | Netherlands Antillean Guilder        |
-| AOA    | Angolan Kwanza                       |
-| ARS    | Argentine Peso                       |
-| AUD    | Australian Dollar                    |
-| AWG    | Aruban Florin                        |
-| AZN    | Azerbaijani Manat                    |
-| BAM    | Bosnia-Herzegovina Convertible Mark  |
-| BBD    | Barbadian Dollar                     |
-| BDT    | Bangladeshi Taka                     |
-| BGN    | Bulgarian Lev                        |
-| BHD    | Bahraini Dinar                       |
-| BIF    | Burundian Franc                      |
-| BMD    | Bermudan Dollar                      |
-| BND    | Brunei Dollar                        |
-| BOB    | Bolivian Boliviano                   |
-| BRL    | Brazilian Real                       |
-| BSD    | Bahamian Dollar                      |
-| BTN    | Bhutanese Ngultrum                   |
-| BWP    | Botswanan Pula                       |
-| BYN    | Belarusian Ruble                     |
-| BZD    | Belize Dollar                        |
-| CAD    | Canadian Dollar                      |
-| CDF    | Congolese Franc                      |
-| CHF    | Swiss Franc                          |
-| CLP    | Chilean Peso                         |
-| CNY    | Chinese Yuan                         |
-| COP    | Colombian Peso                       |
-| CRC    | Costa Rican Colón                    |
-| CUP    | Cuban Peso                           |
-| CVE    | Cape Verdean Escudo                  |
-| CZK    | Czech Republic Koruna                |
-| DJF    | Djiboutian Franc                     |
-| DKK    | Danish Krone                         |
-| DOP    | Dominican Peso                       |
-| DZD    | Algerian Dinar                       |
-| EEK    | Estonian Kroon                       |
-| EGP    | Egyptian Pound                       |
-| ERN    | Eritrean Nakfa                       |
-| ETB    | Ethiopian Birr                       |
-| EUR    | Euro                                 |
-| FJD    | Fijian Dollar                        |
-| FKP    | Falkland Islands Pound               |
-| GBP    | British Pound Sterling               |
-| GEL    | Georgian Lari                        |
-| GGP    | Guernsey Pound                       |
-| GHS    | Ghanaian Cedi                        |
-| GIP    | Gibraltar Pound                      |
-| GMD    | Gambian Dalasi                       |
-| GNF    | Guinean Franc                        |
-| GTQ    | Guatemalan Quetzal                   |
-| GYD    | Guyanaese Dollar                     |
-| HKD    | Hong Kong Dollar                     |
-| HNL    | Honduran Lempira                     |
-| HRK    | Croatian Kuna                        |
-| HTG    | Haitian Gourde                       |
-| HUF    | Hungarian Forint                     |
-| IDR    | Indonesian Rupiah                    |
-| ILS    | Israeli New Sheqel                   |
-| IMP    | Manx pound                           |
-| INR    | Indian Rupee                         |
-| IQD    | Iraqi Dinar                          |
-| IRR    | Iranian Rial                         |
-| ISK    | Icelandic Króna                      |
-| JEP    | Jersey Pound                         |
-| JMD    | Jamaican Dollar                      |
-| JOD    | Jordanian Dinar                      |
-| JPY    | Japanese Yen                         |
-| KES    | Kenyan Shilling                      |
-| KGS    | Kyrgystani Som                       |
-| KHR    | Cambodian Riel                       |
-| KMF    | Comorian Franc                       |
-| KPW    | North Korean Won                     |
-| KRW    | South Korean Won                     |
-| KWD    | Kuwaiti Dinar                        |
-| KYD    | Cayman Islands Dollar                |
-| KZT    | Kazakhstani Tenge                    |
-| LAK    | Laotian Kip                          |
-| LBP    | Lebanese Pound                       |
-| LKR    | Sri Lankan Rupee                     |
-| LRD    | Liberian Dollar                      |
-| LSL    | Lesotho Loti                         |
-| LYD    | Libyan Dinar                         |
-| MAD    | Moroccan Dirham                      |
-| MDL    | Moldovan Leu                         |
-| MGA    | Malagasy Ariary                      |
-| MKD    | Macedonian Denar                     |
-| MMK    | Myanma Kyat                          |
-| MNT    | Mongolian Tugrik                     |
-| MOP    | Macanese Pataca                      |
-| MRU    | Mauritanian Ouguiya                  |
-| MTL    | Maltese Lira                         |
-| MUR    | Mauritian Rupee                      |
-| MVR    | Maldivian Rufiyaa                    |
-| MWK    | Malawian Kwacha                      |
-| MXN    | Mexican Peso                         |
-| MYR    | Malaysian Ringgit                    |
-| MZN    | Mozambican Metical                   |
-| NAD    | Namibian Dollar                      |
-| NGN    | Nigerian Naira                       |
-| NIO    | Nicaraguan Córdoba                   |
-| NOK    | Norwegian Krone                      |
-| NPR    | Nepalese Rupee                       |
-| NZD    | New Zealand Dollar                   |
-| OMR    | Omani Rial                           |
-| PAB    | Panamanian Balboa                    |
-| PEN    | Peruvian Nuevo Sol                   |
-| PGK    | Papua New Guinean Kina               |
-| PHP    | Philippine Peso                      |
-| PKR    | Pakistani Rupee                      |
-| PLN    | Polish Zloty                         |
-| PYG    | Paraguayan Guarani                   |
-| QAR    | Qatari Rial                          |
-| RON    | Romanian Leu                         |
-| RSD    | Serbian Dinar                        |
-| RUB    | Russian Ruble                        |
-| RWF    | Rwandan Franc                        |
-| SAR    | Saudi Riyal                          |
-| SBD    | Solomon Islands Dollar               |
-| SCR    | Seychellois Rupee                    |
-| SDG    | Sudanese Pound                       |
-| SEK    | Swedish Krona                        |
-| SGD    | Singapore Dollar                     |
-| SHP    | Saint Helena Pound                   |
-| SLL    | Sierra Leonean Leone                 |
-| SOS    | Somali Shilling                      |
-| SRD    | Surinamese Dollar                    |
-| SSP    | South Sudanese Pound                 |
-| STN    | São Tomé and Príncipe Dobra          |
-| SVC    | Salvadoran Colón                     |
-| SYP    | Syrian Pound                         |
-| SZL    | Swazi Lilangeni                      |
-| THB    | Thai Baht                            |
-| TJS    | Tajikistani Somoni                   |
-| TMT    | Turkmenistani Manat                  |
-| TND    | Tunisian Dinar                       |
-| TOP    | Tongan Paʻanga                       |
-| TRY    | Turkish Lira                         |
-| TTD    | Trinidad and Tobago Dollar           |
-| TWD    | New Taiwan Dollar                    |
-| TZS    | Tanzanian Shilling                   |
-| UAH    | Ukrainian Hryvnia                    |
-| UGX    | Ugandan Shilling                     |
-| USD    | United States Dollar                 |
-| UYU    | Uruguayan Peso                       |
-| UZS    | Uzbekistan Som                       |
-| VES   | Venezuelan Bolívar Soberano           |
-| VND    | Vietnamese Dong                      |
-| VUV    | Vanuatu Vatu                         |
-| WST    | Samoan Tala                          |
-| XAF    | CFA Franc BEAC                       |
-| XCD    | East Caribbean Dollar                |
-| XOF    | CFA Franc BCEAO                      |
-| XPF    | CFP Franc                            |
-| YER    | Yemeni Rial                          |
-| ZAR    | South African Rand                   |
-| ZMW    | Zambian Kwacha                       |
+If you'd like to add/fix symbol or icon, issues or pull requests are appriciated.
 
-## Alternative Currencies
-
-| Symbol     | Name                                   | Type        |
-| ---------- | -------------------------------------- | ----------- |
-| BTC        | Bitcoin                                | Crypto      |
-| BTS        | BitShares                              | Crypto      |
-| CLF        | Chilean Unit of Account (UF)           | Alternative |
-| CNH        | Chinese Yuan (Offshore)                | Alternative |
-| CUC        | Cuban Convertible Peso                 | Alternative |
-| DASH       | Dash                                   | Crypto      |
-| DOGE       | DogeCoin                               | Crypto      |
-| EAC        | EarthCoin                              | Crypto      |
-| EMC        | Emercoin                               | Crypto      |
-| ETH        | Ethereum                               | Crypto      |
-| FCT        | Factom                                 | Crypto      |
-| FTC        | Feathercoin                            | Crypto      |
-| LD         | Linden Dollar                          | Crypto (?)  |
-| LTC        | LiteCoin                               | Crypto      |
-| MRO        | Mauritanian Ouguiya (pre-2018)         | Alternative |
-| NMC        | Namecoin                               | Crypto      |
-| NVC        | NovaCoin                               | Crypto      |
-| NXT        | Nxt                                    | Crypto      |
-| PPC        | Peercoin                               | Crypto      |
-| STD        | São Tomé and Príncipe Dobra (pre-2018) | Alternative |
-| STR        | Stellar                                | Crypto      |
-| VEF        | Venezuelan Bolívar Fuerte              | Alternative |
-| VEF_BLKMKT | Venezuelan Bolívar (Black Market)      | Alternative |
-| VEF_DICOM  | Venezuelan Bolívar (DICOM)             | Alternative |
-| VEF_DIPRO  | Venezuelan Bolívar (DIPRO)             | Alternative |
-| VTC        | VertCoin                               | Crypto      |
-| XAG        | Silver Ounce                           | Trade       |
-| XAU        | Gold Ounce                             | Trade       |
-| XDR        | Special Drawing Rights                 | Special     |
-| XMR        | Monero                                 | Crypto      |
-| XPD        | Palladium Ounce                        | Trade       |
-| XPM        | Primecoin                              | Crypto      |
-| XPT        | Platinum Ounce                         | Trade       |
-| XRP        | Ripple                                 | Crypto      |
+| **Code**       | **Type**    | **Name**                               | **Icon** | **Symbol** | **Alias** |
+| -------------- | ----------- | -------------------------------------- | -------- | ---------- | --------- |
+| **AED**        | Fiat        | United Arab Emirates Dirham            | ✅        | د.إ        |           |
+| **AFN**        | Fiat        | Afghan Afghani                         | ✅        | Af         |           |
+| **ALL**        | Fiat        | Albanian Lek                           | ✅        | L          |           |
+| **AMD**        | Fiat        | Armenian Dram                          | ✅        | Դ          | Դ         |
+| **ANG**        | Fiat        | Netherlands Antillean Guilder          | ✅        | ƒ          |           |
+| **AOA**        | Fiat        | Angolan Kwanza                         | ✅        | Kz         |           |
+| **ARS**        | Fiat        | Argentine Peso                         | ✅        | $          |           |
+| **AUD**        | Fiat        | Australian Dollar                      | ✅        | $          | AU$       |
+| **AWG**        | Fiat        | Aruban Florin                          | ✅        | ƒ          | ƒ         |
+| **AZN**        | Fiat        | Azerbaijani Manat                      | ✅        | ман        |           |
+| **BAM**        | Fiat        | Bosnia-Herzegovina Convertible Mark    | ✅        | КМ         |           |
+| **BBD**        | Fiat        | Barbadian Dollar                       | ✅        | $          |           |
+| **BDT**        | Fiat        | Bangladeshi Taka                       | ✅        | ৳          |           |
+| **BGN**        | Fiat        | Bulgarian Lev                          | ✅        | лв         |           |
+| **BHD**        | Fiat        | Bahraini Dinar                         | ✅        | ب.د        |           |
+| **BIF**        | Fiat        | Burundian Franc                        | ✅        | ₣          |           |
+| **BMD**        | Fiat        | Bermudan Dollar                        | ✅        | $          |           |
+| **BND**        | Fiat        | Brunei Dollar                          | ✅        | $          |           |
+| **BOB**        | Fiat        | Bolivian Boliviano                     | ✅        | Bs.        |           |
+| **BRL**        | Fiat        | Brazilian Real                         | ✅        | R$         | R$        |
+| **BSD**        | Fiat        | Bahamian Dollar                        | ✅        | $          |           |
+| **BTC**        | Crypto      | Bitcoin                                | ✅        | ₿          | ₿         |
+| **BTN**        | Fiat        | Bhutanese Ngultrum                     | ✅        | Nu.        |           |
+| **BTS**        | Crypto      | BitShares                              | ✅        | BTS        |           |
+| **BWP**        | Fiat        | Botswanan Pula                         | ✅        | P          |           |
+| **BYN**        | Fiat        | Belarusian Ruble                       | ✅        | Br         |           |
+| **BZD**        | Fiat        | Belize Dollar                          | ✅        | $          |           |
+| **CAD**        | Fiat        | Canadian Dollar                        | ✅        | $          | CA$       |
+| **CDF**        | Fiat        | Congolese Franc                        | ✅        | ₣          |           |
+| **CHF**        | Fiat        | Swiss Franc                            | ✅        | ₣          | ₣         |
+| **CLF**        | Alternative | Chilean Unit of Account (UF)           | ✅        | UF         |           |
+| **CLP**        | Fiat        | Chilean Peso                           | ✅        | $          |           |
+| **CNH**        | Alternative | Chinese Yuan (Offshore)                | ✅        | ¥          |           |
+| **CNY**        | Fiat        | Chinese Yuan                           | ✅        | ¥          | CN¥       |
+| **COP**        | Fiat        | Colombian Peso                         | ✅        | $          |           |
+| **CRC**        | Fiat        | Costa Rican Colón                      | ✅        | ₡          | ₡         |
+| **CUC**        | Alternative | Cuban Convertible Peso                 | ✅        | $          |           |
+| **CUP**        | Fiat        | Cuban Peso                             | ✅        | $          |           |
+| **CVE**        | Fiat        | Cape Verdean Escudo                    | ✅        | $          |           |
+| **CZK**        | Fiat        | Czech Republic Koruna                  | ✅        | Kč         |           |
+| **DASH**       | Crypto      | Dash                                   | ✅        | DASH       |           |
+| **DJF**        | Fiat        | Djiboutian Franc                       | ✅        | ₣          |           |
+| **DKK**        | Fiat        | Danish Krone                           | ✅        | kr         |           |
+| **DOGE**       | Crypto      | DogeCoin                               | ✅        | Ð          | Ð         |
+| **DOP**        | Fiat        | Dominican Peso                         | ✅        | $          |           |
+| **DZD**        | Fiat        | Algerian Dinar                         | ✅        | د.ج        |           |
+| **EAC**        | Crypto      | EarthCoin                              | ✅        |            |           |
+| **EGP**        | Fiat        | Egyptian Pound                         | ✅        | £          |           |
+| **EMC**        | Crypto      | Emercoin                               | ✅        |            |           |
+| **ERN**        | Fiat        | Eritrean Nakfa                         | ✅        | Nfk        |           |
+| **ETB**        | Fiat        | Ethiopian Birr                         | ✅        |            |           |
+| **ETH**        | Crypto      | Ethereum                               | ✅        |            |           |
+| **EUR**        | Fiat        | Euro                                   | ✅        | €          | €         |
+| **FCT**        | Crypto      | Factom                                 | ✅        |            |           |
+| **FJD**        | Fiat        | Fijian Dollar                          | ✅        | $          |           |
+| **FKP**        | Fiat        | Falkland Islands Pound                 | ✅        | £          |           |
+| **FTC**        | Crypto      | Feathercoin                            | ✅        |            |           |
+| **GBP**        | Fiat        | British Pound Sterling                 | ✅        | £          | £         |
+| **GEL**        | Fiat        | Georgian Lari                          | ✅        | ლ          | ლ         |
+| **GGP**        | Fiat        | Guernsey Pound                         | ✅        | £          |           |
+| **GHS**        | Fiat        | Ghanaian Cedi                          | ✅        | ₵          | ₵         |
+| **GIP**        | Fiat        | Gibraltar Pound                        | ✅        | £          |           |
+| **GMD**        | Fiat        | Gambian Dalasi                         | ✅        | D          |           |
+| **GNF**        | Fiat        | Guinean Franc                          | ✅        | ₣          |           |
+| **GTQ**        | Fiat        | Guatemalan Quetzal                     | ✅        | Q          |           |
+| **GYD**        | Fiat        | Guyanaese Dollar                       | ✅        | $          |           |
+| **HKD**        | Fiat        | Hong Kong Dollar                       | ✅        | $          | HK$       |
+| **HNL**        | Fiat        | Honduran Lempira                       | ✅        | L          |           |
+| **HRK**        | Fiat        | Croatian Kuna                          | ✅        | Kn         |           |
+| **HTG**        | Fiat        | Haitian Gourde                         | ✅        | G          |           |
+| **HUF**        | Fiat        | Hungarian Forint                       | ✅        | Ft         |           |
+| **IDR**        | Fiat        | Indonesian Rupiah                      | ✅        | ₨          | ₨         |
+| **ILS**        | Fiat        | Israeli New Sheqel                     | ✅        | ₪          | ₪         |
+| **IMP**        | Fiat        | Manx pound                             | ✅        | £          |           |
+| **INR**        | Fiat        | Indian Rupee                           | ✅        | ₹          | ₹         |
+| **IQD**        | Fiat        | Iraqi Dinar                            | ✅        | ع.د        |           |
+| **IRR**        | Fiat        | Iranian Rial                           | ✅        | ﷼          |           |
+| **ISK**        | Fiat        | Icelandic Króna                        | ✅        | kr         |           |
+| **JEP**        | Fiat        | Jersey Pound                           | ✅        | £          |           |
+| **JMD**        | Fiat        | Jamaican Dollar                        | ✅        | $          |           |
+| **JOD**        | Fiat        | Jordanian Dinar                        | ✅        | د.ا        |           |
+| **JPY**        | Fiat        | Japanese Yen                           | ✅        | ¥          | ¥         |
+| **KES**        | Fiat        | Kenyan Shilling                        | ✅        | Sh         |           |
+| **KGS**        | Fiat        | Kyrgystani Som                         | ✅        |            |           |
+| **KHR**        | Fiat        | Cambodian Riel                         | ✅        | ៛          | ៛         |
+| **KMF**        | Fiat        | Comorian Franc                         | ✅        | CF         |           |
+| **KPW**        | Fiat        | North Korean Won                       | ✅        | ₩          |           |
+| **KRW**        | Fiat        | South Korean Won                       | ✅        | ₩          | ₩         |
+| **KWD**        | Fiat        | Kuwaiti Dinar                          | ✅        | د.ك        |           |
+| **KYD**        | Fiat        | Cayman Islands Dollar                  | ✅        | $          |           |
+| **KZT**        | Fiat        | Kazakhstani Tenge                      | ✅        | 〒         |           |
+| **LAK**        | Fiat        | Laotian Kip                            | ✅        | ₭          | ₭         |
+| **LBP**        | Fiat        | Lebanese Pound                         | ✅        | ل.ل        |           |
+| **LD**         | Crypto (?)  | Linden Dollar                          | ❌        | L$         | L$        |
+| **LKR**        | Fiat        | Sri Lankan Rupee                       | ✅        | ₨          |           |
+| **LRD**        | Fiat        | Liberian Dollar                        | ✅        | $          |           |
+| **LSL**        | Fiat        | Lesotho Loti                           | ✅        | L          |           |
+| **LTC**        | Crypto      | LiteCoin                               | ✅        | Ł          | Ł         |
+| **LYD**        | Fiat        | Libyan Dinar                           | ✅        | ل.د        |           |
+| **MAD**        | Fiat        | Moroccan Dirham                        | ✅        | د.م.       |           |
+| **MDL**        | Fiat        | Moldovan Leu                           | ✅        | L          |           |
+| **MGA**        | Fiat        | Malagasy Ariary                        | ✅        | Ar         |           |
+| **MKD**        | Fiat        | Macedonian Denar                       | ✅        | ден        |           |
+| **MMK**        | Fiat        | Myanma Kyat                            | ✅        | K          |           |
+| **MNT**        | Fiat        | Mongolian Tugrik                       | ✅        | ₮          | ₮         |
+| **MOP**        | Fiat        | Macanese Pataca                        | ✅        | P          |           |
+| **MRO**        | Alternative | Mauritanian Ouguiya (pre-2018)         | ✅        | UM         |           |
+| **MRU**        | Fiat        | Mauritanian Ouguiya                    | ✅        | UM         |           |
+| **MUR**        | Fiat        | Mauritian Rupee                        | ✅        | ₨          |           |
+| **MVR**        | Fiat        | Maldivian Rufiyaa                      | ✅        | ރ.         |           |
+| **MWK**        | Fiat        | Malawian Kwacha                        | ✅        | MK         |           |
+| **MXN**        | Fiat        | Mexican Peso                           | ✅        | $          | MX$       |
+| **MYR**        | Fiat        | Malaysian Ringgit                      | ✅        | RM         |           |
+| **MZN**        | Fiat        | Mozambican Metical                     | ✅        | MTn        |           |
+| **NAD**        | Fiat        | Namibian Dollar                        | ✅        | $          |           |
+| **NGN**        | Fiat        | Nigerian Naira                         | ✅        | ₦          | ₦         |
+| **NIO**        | Fiat        | Nicaraguan Córdoba                     | ✅        | C$         | C$        |
+| **NMC**        | Crypto      | Namecoin                               | ✅        | ℕ          | ℕ         |
+| **NOK**        | Fiat        | Norwegian Krone                        | ✅        | kr         |           |
+| **NPR**        | Fiat        | Nepalese Rupee                         | ✅        | ₨          |           |
+| **NVC**        | Crypto      | NovaCoin                               | ❌        |            |           |
+| **NXT**        | Crypto      | Nxt                                    | ✅        | NXT        |           |
+| **NZD**        | Fiat        | New Zealand Dollar                     | ✅        | $          | NZ$       |
+| **OMR**        | Fiat        | Omani Rial                             | ✅        | ر.ع.       |           |
+| **PAB**        | Fiat        | Panamanian Balboa                      | ✅        | B/.        |           |
+| **PEN**        | Fiat        | Peruvian Nuevo Sol                     | ✅        | S/.        |           |
+| **PGK**        | Fiat        | Papua New Guinean Kina                 | ✅        | K          |           |
+| **PHP**        | Fiat        | Philippine Peso                        | ✅        | ₱          | ₱         |
+| **PKR**        | Fiat        | Pakistani Rupee                        | ✅        | ₨          |           |
+| **PLN**        | Fiat        | Polish Zloty                           | ✅        | zł         | zł        |
+| **PPC**        | Crypto      | Peercoin                               | ✅        | Ᵽ          | Ᵽ         |
+| **PYG**        | Fiat        | Paraguayan Guarani                     | ✅        | ₲          | ₲         |
+| **QAR**        | Fiat        | Qatari Rial                            | ✅        | ر.ق        |           |
+| **RON**        | Fiat        | Romanian Leu                           | ✅        | L          |           |
+| **RSD**        | Fiat        | Serbian Dinar                          | ✅        | din        |           |
+| **RUB**        | Fiat        | Russian Ruble                          | ✅        | р.         |           |
+| **RWF**        | Fiat        | Rwandan Franc                          | ✅        | ₣          |           |
+| **SAR**        | Fiat        | Saudi Riyal                            | ✅        | ر.س        |           |
+| **SBD**        | Fiat        | Solomon Islands Dollar                 | ✅        | $          |           |
+| **SCR**        | Fiat        | Seychellois Rupee                      | ✅        | ₨          |           |
+| **SDG**        | Fiat        | Sudanese Pound                         | ✅        | £          |           |
+| **SEK**        | Fiat        | Swedish Krona                          | ✅        | kr         |           |
+| **SGD**        | Fiat        | Singapore Dollar                       | ✅        | $          | S$        |
+| **SHP**        | Fiat        | Saint Helena Pound                     | ❌        | £          |           |
+| **SLL**        | Fiat        | Sierra Leonean Leone                   | ✅        | Le         |           |
+| **SOS**        | Fiat        | Somali Shilling                        | ✅        | Sh         |           |
+| **SRD**        | Fiat        | Surinamese Dollar                      | ✅        | $          |           |
+| **SSP**        | Fiat        | South Sudanese Pound                   | ✅        | £          |           |
+| **STD**        | Alternative | São Tomé and Príncipe Dobra (pre-2018) | ✅        | Db         |           |
+| **STN**        | Fiat        | São Tomé and Príncipe Dobra            | ✅        | Db         |           |
+| **STR**        | Crypto      | Stellar                                | ✅        | *          |           |
+| **SVC**        | Fiat        | Salvadoran Colón                       | ✅        | ₡          |           |
+| **SYP**        | Fiat        | Syrian Pound                           | ✅        | £          |           |
+| **SZL**        | Fiat        | Swazi Lilangeni                        | ✅        | L          |           |
+| **THB**        | Fiat        | Thai Baht                              | ✅        | ฿          | ฿         |
+| **TJS**        | Fiat        | Tajikistani Somoni                     | ✅        | ЅМ         |           |
+| **TMT**        | Fiat        | Turkmenistani Manat                    | ✅        | m          |           |
+| **TND**        | Fiat        | Tunisian Dinar                         | ✅        | د.ت        |           |
+| **TOP**        | Fiat        | Tongan Paʻanga                         | ✅        | T$         |           |
+| **TRY**        | Fiat        | Turkish Lira                           | ✅        | ₤          | ₤         |
+| **TTD**        | Fiat        | Trinidad and Tobago Dollar             | ✅        | $          |           |
+| **TWD**        | Fiat        | New Taiwan Dollar                      | ✅        | $          | NT$       |
+| **TZS**        | Fiat        | Tanzanian Shilling                     | ✅        | Sh         |           |
+| **UAH**        | Fiat        | Ukrainian Hryvnia                      | ✅        | ₴          | ₴         |
+| **UGX**        | Fiat        | Ugandan Shilling                       | ✅        | Sh         |           |
+| **USD**        | Fiat        | United States Dollar                   | ✅        | $          | $         |
+| **UYU**        | Fiat        | Uruguayan Peso                         | ✅        | $          |           |
+| **UZS**        | Fiat        | Uzbekistan Som                         | ✅        | лв         |           |
+| **VEF**        | Alternative | Venezuelan Bolívar Fuerte              | ✅        | Bs.F.      |           |
+| **VEF_BLKMKT** | Alternative | Venezuelan Bolívar (Black Market)      | ✅        | Bs.F.      |           |
+| **VEF_DICOM**  | Alternative | Venezuelan Bolívar (DICOM)             | ✅        | Bs.F.      |           |
+| **VEF_DIPRO**  | Alternative | Venezuelan Bolívar (DIPRO)             | ✅        | Bs.F.      |           |
+| **VES**        | Fiat        | Venezuelan Bolívar Soberano            | ✅        | Bs.S.      |           |
+| **VND**        | Fiat        | Vietnamese Dong                        | ✅        | ₫          | ₫         |
+| **VTC**        | Crypto      | VertCoin                               | ✅        | VTC        |           |
+| **VUV**        | Fiat        | Vanuatu Vatu                           | ✅        | Vt         |           |
+| **WST**        | Fiat        | Samoan Tala                            | ✅        | T          |           |
+| **XAF**        | Fiat        | CFA Franc BEAC                         | ✅        | ₣          |           |
+| **XAG**        | Trade       | Silver Ounce                           | ❌        | XAG        |           |
+| **XAU**        | Trade       | Gold Ounce                             | ❌        | XAU        |           |
+| **XCD**        | Fiat        | East Caribbean Dollar                  | ✅        | $          |           |
+| **XDR**        | Special     | Special Drawing Rights                 | ✅        | SDR        |           |
+| **XMR**        | Crypto      | Monero                                 | ✅        | ɱ          | ɱ         |
+| **XOF**        | Fiat        | CFA Franc BCEAO                        | ✅        | CFA        |           |
+| **XPD**        | Trade       | Palladium Ounce                        | ❌        | XPD        |           |
+| **XPF**        | Fiat        | CFP Franc                              | ❌        | ₣          |           |
+| **XPM**        | Crypto      | Primecoin                              | ✅        | Ψ          | Ψ         |
+| **XPT**        | Trade       | Platinum Ounce                         | ❌        | XPT        |           |
+| **XRP**        | Crypto      | Ripple                                 | ✅        |            |           |
+| **YER**        | Fiat        | Yemeni Rial                            | ✅        | ﷼          |           |
+| **ZAR**        | Fiat        | South African Rand                     | ✅        | R          |           |
+| **ZMW**        | Fiat        | Zambian Kwacha                         | ✅        | ZK         |           |
