@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Function to be called by workflow"""
+"""Functions to be called by workflow"""
 import os
 from datetime import datetime
-from .exceptions import CoonError
+from .exceptions import CoonError, ConfigError
 from .query import Query
-from .utils import (load_currencies, refresh_rates, refresh_currencies,
-                    generate_list_items)
+from .utils import (init_workflow, load_currencies, refresh_rates,
+                    refresh_currencies, generate_list_items)
 
 __all__ = [
     "load", "convert", "add", "remove", "arrange", "save_arrange", "refresh",
@@ -54,14 +54,20 @@ def load(workflow):
 def convert(workflow):
     """Run conversion patterns"""
     try:
+        init_workflow(workflow)
         query = Query(workflow.args[1:])
         query.run_pattern(workflow)
-    except ValueError as error:
-        workflow.add_item(title=error.args[0], icon="hints/cancel.png")
-    except EnvironmentError as error:
+    except CoonError as error:
+        workflow.logger.info("Coon: {}".format(type(error).__name__))
         workflow.logger.info(error)
         workflow.add_item(title=error.args[0],
                           subtitle=error.args[1],
+                          icon="hints/cancel.png")
+    except Exception as error:
+        workflow.logger.info("Python: {}".format(type(error).__name__))
+        workflow.logger.info(error)
+        workflow.add_item(title="Python Error: {}".format(type(error).__name__),
+                          subtitle=error.args[0],
                           icon="hints/cancel.png")
     workflow.send_feedback()
 
@@ -143,7 +149,14 @@ def save_arrange(workflow):
 def refresh(workflow):
     """Manually trigger rates refresh"""
     try:
-        refresh_rates()
+        init_workflow(workflow)
+    except ConfigError as error:
+        workflow.logger.info(error)
+        workflow.add_item(title=error.args[0],
+                          subtitle=error.args[1],
+                          icon="hints/cancel.png")
+    try:
+        refresh_rates(workflow.config)
         refresh_currencies()
     except CoonError as error:
         workflow.logger.info(error)
@@ -153,7 +166,8 @@ def refresh(workflow):
         workflow.logger.info(error)
         print("{},{}".format("❌Error occured during refresh",
                              "Python: {}".format(type(error).__name__)))
-    print("{},{}".format("✅Currency list and rates have refreshed", str(datetime.now())))
+    print("{},{}".format("✅Currency list and rates have refreshed",
+                         str(datetime.now())))
 
 
 def help_me(workflow):

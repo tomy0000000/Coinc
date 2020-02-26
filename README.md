@@ -97,12 +97,14 @@ See [Currencies](./Currencies.md)
 
 ## Credit & License
 
-* This project is inspired by [FlyRabbit/alfred3-workflow-CurrencyX](https://github.com/FlyRabbit/alfred3-workflow-CurrencyX)
+* This project is inspired by [plummm/alfred3-workflow-CurrencyX](https://github.com/plummm/alfred3-workflow-CurrencyX)
 
   I made this spin-off because the original one doesn't work in the way I thought it should be. As I'm trying to tweaking the the old ones, things get more out of control which ended up me deciding to re-write my own version.
 
 * Core Library depends on the work-of-art-library: [deanishe/alfred-workflow](https://github.com/deanishe/alfred-workflow)
+
 * API provided by [Open Exchange Rates](https://openexchangerates.org/)
+
 * Icon licenses as below
 
 | Name              | Author                      | Source                                                       |
@@ -117,3 +119,4 @@ See [Currencies](./Currencies.md)
 | VertCoin (VTC)    | vertcoin-project/VertDocs   | [GitHub](https://github.com/vertcoin-project/VertDocs)       |
 
 * Any source code unmentioned above are released under the [MIT license](https://github.com/tomy0000000/Coon/blob/master/LICENSE)
+
