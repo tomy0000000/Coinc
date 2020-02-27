@@ -1,6 +1,6 @@
 # Support Currencies
 
-This is a list of support currencies cloned in August, 2019 just for reference. Feel Free to use `Command-F` to search in this page. For Newest support currencies, please visit [Documentation of Open Exchange Rates](https://docs.openexchangerates.org/docs/supported-currencies).
+This is a list of support currencies cloned in February, 2020 just for reference. Feel Free to use `Command-F` to search in this page. For Newest support currencies, please visit [Documentation of Open Exchange Rates](https://docs.openexchangerates.org/docs/supported-currencies).
 
 Please Note that Estonian Kroon (EEK) and Maltese Lira (MTL) is listed in Documentation of Open Exchange Rates, but did not actually provided for some reason.
 
