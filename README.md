@@ -6,7 +6,7 @@
 
 Coon is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API. For a complete list of support currencies, see [Currencies](./Currencies.md).
 
-For comprehensive Installation and Usage, see [Wiki](./wiki)
+For comprehensive Installation and Usage, see [Wiki](../../wiki)
 
 ## Credit & License
 
