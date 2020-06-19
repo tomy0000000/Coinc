@@ -8,6 +8,16 @@ Coon is an Alfred workflow which do currency conversion by using live currency r
 
 For list of support currencies, Installation, Setup and Usage, see [Wiki](../../wiki)
 
+# Name Change
+
+I name this workflow with an online business name generator, with no background acknowledge or concept of the naming.
+
+My thoughts are simple, "con-" for "conversion", a mistype of "coin", and a same pronunciation "cone🍦" with a food I'm in favor.
+
+However, after the terrible, horrifing tragedy happened recently, this name is abandoned, and will be updated recently.
+
+My sincerly apologize for any unconfort that might arouse. #BlackLivesMattters
+
 ## Credit & License
 
 * This project is inspired by [plummm/alfred3-workflow-CurrencyX](https://github.com/plummm/alfred3-workflow-CurrencyX)
