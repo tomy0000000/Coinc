@@ -2,7 +2,7 @@
 """Functions to be called by workflow"""
 import os
 from datetime import datetime
-from .exceptions import CoonError, ConfigError
+from .exceptions import CoincError, ConfigError
 from .query import Query
 from .utils import (init_workflow, load_currencies, refresh_rates,
                     refresh_currencies, generate_list_items)
@@ -57,8 +57,8 @@ def convert(workflow):
         init_workflow(workflow)
         query = Query(workflow.args[1:])
         query.run_pattern(workflow)
-    except CoonError as error:
-        workflow.logger.info("Coon: {}".format(type(error).__name__))
+    except CoincError as error:
+        workflow.logger.info("Coinc: {}".format(type(error).__name__))
         workflow.logger.info(error)
         workflow.add_item(title=error.args[0],
                           subtitle=error.args[1],
@@ -158,10 +158,10 @@ def refresh(workflow):
     try:
         refresh_rates(workflow.config)
         refresh_currencies()
-    except CoonError as error:
+    except CoincError as error:
         workflow.logger.info(error)
         print("{},{}".format("❌Error occured during refresh",
-                             "Coon: {}".format(type(error).__name__)))
+                             "Coinc: {}".format(type(error).__name__)))
     except Exception as error:
         workflow.logger.info(error)
         print("{},{}".format("❌Error occured during refresh",

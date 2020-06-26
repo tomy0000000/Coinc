@@ -8,10 +8,61 @@ import time
 import unicodedata
 from .exceptions import ApiError, AppIDError, UnknownPythonError
 
-RATE_ENDPOINT = ("https://openexchangerates.org/api/latest.json"
-                 "?show_alternative=1&app_id={}")
-CURRENCY_ENDPOINT = ("https://openexchangerates.org/api/currencies.json"
-                     "?show_alternative=1")
+INFO_PLIST_PATH = "info.plist"
+OLD_BUNDLE_ID = "tech.tomy.coon"
+NEW_BUNDLE_ID = "tech.tomy.coinc"
+WORKFLOW_DATA_PATH = "~/Library/Application Support/Alfred/Workflow Data"
+RATE_ENDPOINT = (
+    "https://openexchangerates.org/api/latest.json" "?show_alternative=1&app_id={}"
+)
+CURRENCY_ENDPOINT = (
+    "https://openexchangerates.org/api/currencies.json" "?show_alternative=1"
+)
+
+
+def manual_update_patch(workflow):
+    """manual update metadatas for v1.3.0 name change
+    
+    Update include two section, change Bundle ID in info.plist to a new one,
+    and rename the old data directory into new one
+    
+    Arguments:
+        workflow {workflow.Workflow3} -- The workflow object
+    
+    Returns:
+        bool -- Whether any modification got invoked
+    
+    Raises:
+        UnknownPythonError -- Raised when Python runtime version can not be
+                              correctly detacted
+    """
+    updated = False
+    # Fix Bundle ID
+    if workflow.bundleid.encode("utf-8") == OLD_BUNDLE_ID:
+        import plistlib
+
+        if sys.version_info.major == 2:
+            info = plistlib.readPlist(INFO_PLIST_PATH)
+            info["bundleid"] = NEW_BUNDLE_ID
+            plistlib.writePlist(info, INFO_PLIST_PATH)
+        elif sys.version_info.major == 3:
+            with open(INFO_PLIST_PATH, "rw") as file:
+                info = plistlib.load(file)
+                info["bundleid"] = NEW_BUNDLE_ID
+                plistlib.dump(info, INFO_PLIST_PATH)
+        else:
+            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
+        workflow.logger.info("Bundle ID modified")
+        updated = True
+
+    # Move Data Directory
+    old_path = os.path.expanduser(os.path.join(WORKFLOW_DATA_PATH, OLD_BUNDLE_ID))
+    if os.path.exists(old_path):
+        new_path = os.path.expanduser(os.path.join(WORKFLOW_DATA_PATH, NEW_BUNDLE_ID))
+        os.rename(old_path, new_path)
+        workflow.logger.info("Data Directory moved")
+        updated = True
+    return updated
 
 
 def init_workflow(workflow):
@@ -26,6 +77,7 @@ def init_workflow(workflow):
         workflow -- the passed in workflow object
     """
     from .config import Config
+
     workflow.config = Config()
     return workflow
 
@@ -43,8 +95,7 @@ def _calculate(value, from_currency, to_currency, rates, precision):
     Returns:
         float -- The result of the conversion
     """
-    return round(value * (rates[to_currency] / rates[from_currency]),
-                 precision)
+    return round(value * (rates[to_currency] / rates[from_currency]), precision)
 
 
 def _byteify(loaded_dict):
@@ -58,8 +109,7 @@ def _byteify(loaded_dict):
     """
     if isinstance(loaded_dict, dict):
         return {
-            _byteify(key): _byteify(value)
-            for key, value in loaded_dict.iteritems()
+            _byteify(key): _byteify(value) for key, value in loaded_dict.iteritems()
         }
     if isinstance(loaded_dict, list):
         return [_byteify(element) for element in loaded_dict]
@@ -152,8 +202,9 @@ def is_it_something_mixed(query):
             return (value, currency)
 
     # Type 3: {symbol}{number}
-    match_result = re.match(r"^(.+?)([0-9,]+(\.\d+)?)$",
-                            query)  # Use '+?' for non-progressive match
+    match_result = re.match(
+        r"^(.+?)([0-9,]+(\.\d+)?)$", query
+    )  # Use '+?' for non-progressive match
     if match_result:
         value = is_it_float(match_result.groups()[1])
         currency_symbol = is_it_symbol(match_result.groups()[0])
@@ -189,8 +240,7 @@ def load_currencies(path="currencies.json"):
         elif sys.version_info.major == 3:
             currencies = json.load(file)
         else:
-            raise UnknownPythonError("Unexpected Python Version",
-                                     sys.version_info)
+            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
         return currencies
 
 
@@ -211,6 +261,7 @@ def refresh_currencies(path="currencies.json"):
     """
     if sys.version_info.major == 2:
         import urllib2
+
         try:
             response = urllib2.urlopen(CURRENCY_ENDPOINT)
         except urllib2.HTTPError as err:
@@ -219,6 +270,7 @@ def refresh_currencies(path="currencies.json"):
         currencies = _byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
         from urllib import request, error
+
         try:
             response = request.urlopen(CURRENCY_ENDPOINT)
         except error.HTTPError as err:
@@ -277,13 +329,15 @@ def refresh_rates(config, path="rates.json"):
     """
     if sys.version_info.major == 2:
         import urllib2
+
         try:
             response = urllib2.urlopen(RATE_ENDPOINT.format(config.app_id))
         except urllib2.HTTPError as err:
             response = _byteify(json.load(err, "utf-8"))
             if err.code == 401:
-                raise AppIDError("Invalid App ID: {}".format(config.app_id),
-                                 response["description"])
+                raise AppIDError(
+                    "Invalid App ID: {}".format(config.app_id), response["description"]
+                )
             elif err.code == 429:
                 raise AppIDError("Access Restricted", response["description"])
             else:
@@ -291,13 +345,15 @@ def refresh_rates(config, path="rates.json"):
         rates = _byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
         from urllib import request, error
+
         try:
             response = request.urlopen(RATE_ENDPOINT.format(config.app_id))
         except error.HTTPError as err:
             response = json.load(err)
             if err.code == 401:
-                raise AppIDError("Invalid App ID: {}".format(config.app_id),
-                                 response["description"])
+                raise AppIDError(
+                    "Invalid App ID: {}".format(config.app_id), response["description"]
+                )
             elif err.code == 429:
                 raise AppIDError("Access Restricted", response["description"])
             else:
@@ -332,8 +388,7 @@ def load_alias(path="alias.json"):
         elif sys.version_info.major == 3:
             alias = json.load(file)
         else:
-            raise UnknownPythonError("Unexpected Python Version",
-                                     sys.version_info)
+            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
         return alias
 
 
@@ -359,13 +414,11 @@ def load_symbols(path="symbols.json"):
         elif sys.version_info.major == 3:
             symbols = json.load(file)
         else:
-            raise UnknownPythonError("Unexpected Python Version",
-                                     sys.version_info)
+            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
         return symbols
 
 
-def generate_result_item(workflow, value, from_currency, to_currency, rates,
-                         icon):
+def generate_result_item(workflow, value, from_currency, to_currency, rates, icon):
     """Calculate conversion result and append item to workflow
 
     Arguments:
@@ -381,29 +434,28 @@ def generate_result_item(workflow, value, from_currency, to_currency, rates,
     """
     symbols = load_symbols()
     result = str(
-        _calculate(value, from_currency, to_currency, rates,
-                   workflow.config.precision))
+        _calculate(value, from_currency, to_currency, rates, workflow.config.precision)
+    )
     result_symboled = "{}{}".format(symbols[to_currency], result)
-    item = workflow.add_item(title="{} {} = {} {}".format(
-        value, from_currency, result, to_currency),
-                             subtitle="Copy '{}' to clipboard".format(result),
-                             icon="flags/{}.png".format(icon),
-                             valid=True,
-                             arg=result,
-                             copytext=result)
+    item = workflow.add_item(
+        title="{} {} = {} {}".format(value, from_currency, result, to_currency),
+        subtitle="Copy '{}' to clipboard".format(result),
+        icon="flags/{}.png".format(icon),
+        valid=True,
+        arg=result,
+        copytext=result,
+    )
     item.add_modifier(
         key="alt",
         subtitle="Copy '{}' to clipboard".format(result_symboled),
         icon="flags/{}.png".format(icon),
         valid=True,
-        arg=result_symboled)
+        arg=result_symboled,
+    )
     return item
 
 
-def generate_list_items(query,
-                        currency_codes,
-                        favorite_filter=None,
-                        sort=False):
+def generate_list_items(query, currency_codes, favorite_filter=None, sort=False):
     """Generate items from currency codes that can be add to workflow
 
     Arguments:
@@ -424,13 +476,15 @@ def generate_list_items(query,
     items = []
     for code in currency_codes:
         if currencies_filter(query, code, currencies[code], favorite_filter):
-            items.append({
-                "title": currencies[code],
-                "subtitle": code,
-                "icon": "flags/{}.png".format(code),
-                "valid": True,
-                "arg": code
-            })
+            items.append(
+                {
+                    "title": currencies[code],
+                    "subtitle": code,
+                    "icon": "flags/{}.png".format(code),
+                    "valid": True,
+                    "arg": code,
+                }
+            )
     if sort:
         items = sorted(items, key=lambda item: item["subtitle"])
     return items

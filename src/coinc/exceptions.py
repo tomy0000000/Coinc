@@ -2,8 +2,8 @@
 """Exceptions used in this module"""
 
 
-class CoonError(Exception):
-    """Base Class used to declare other errors for Coon
+class CoincError(Exception):
+    """Base Class used to declare other errors for Coinc
 
     Extends:
         Exception
@@ -11,46 +11,46 @@ class CoonError(Exception):
     pass
 
 
-class ConfigError(CoonError):
+class ConfigError(CoincError):
     """Raised when there are invalid value filled in Configuration Sheet
 
     Extends:
-        CoonError
+        CoincError
     """
     pass
 
 
-class QueryError(CoonError):
+class QueryError(CoincError):
     """Raised when invalid query were given
 
     Extends:
-        CoonError
+        CoincError
     """
     pass
 
 
-class AppIDError(CoonError):
+class AppIDError(CoincError):
     """Raised when App ID can not be used
 
     Extends:
-        CoonError
+        CoincError
     """
     pass
 
 
-class ApiError(CoonError):
+class ApiError(CoincError):
     """Raised when API is unreachable or return bad response
 
     Extends:
-        CoonError
+        CoincError
     """
     pass
 
 
-class UnknownPythonError(CoonError):
+class UnknownPythonError(CoincError):
     """Raised when Python runtime version can not be correctly detacted
 
     Extends:
-        CoonError
+        CoincError
     """
     pass

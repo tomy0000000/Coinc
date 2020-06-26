@@ -2,21 +2,15 @@
     <img src="./src/icon.png" width="200" height="200">
 </div>
 
-# Coon
+# Coinc
 
-Coon is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API.
+Coinc is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API.
 
 For list of support currencies, Installation, Setup and Usage, see [Wiki](../../wiki)
 
-# Name Change
+## Naming
 
-I name this workflow with an online business name generator, with no background acknowledge or concept of the naming.
-
-My thoughts are simple, "con-" for "conversion", a mistype of "coin", and a same pronunciation "cone🍦" with a food I'm in favor.
-
-However, after the terrible, horrifing tragedy happened recently, this name is abandoned, and will be updated recently.
-
-My sincerly apologize for any unconfort that might arouse. #BlackLivesMattters
+This project has been renamed since v1.3.0. Eveything should be patched during the auto update, but if any problem happened, see this [documentation](../../wiki/Naming-&-v1.3.0-Manual-Update-Guide) for more info.
 
 ## Credit & License
 
