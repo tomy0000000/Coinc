@@ -6,6 +6,8 @@ import re
 import sys
 import time
 import unicodedata
+from decimal import Decimal
+
 from .exceptions import ApiError, AppIDError, UnknownPythonError
 
 INFO_PLIST_PATH = "info.plist"
@@ -22,19 +24,19 @@ CURRENCY_ENDPOINT = (
 
 def manual_update_patch(workflow):
     """manual update metadatas for v1.3.0 name change
-    
+
     Update include two section, change Bundle ID in info.plist to a new one,
     and rename the old data directory into new one
-    
+
     Arguments:
         workflow {workflow.Workflow3} -- The workflow object
-    
+
     Returns:
         bool -- Whether any modification got invoked
-    
+
     Raises:
         UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detacted
+                              correctly detected
     """
     updated = False
     # Fix Bundle ID
@@ -95,7 +97,10 @@ def _calculate(value, from_currency, to_currency, rates, precision):
     Returns:
         float -- The result of the conversion
     """
-    return round(value * (rates[to_currency] / rates[from_currency]), precision)
+    return round(
+        Decimal(value) * (Decimal(rates[to_currency]) / Decimal(rates[from_currency])),
+        precision,
+    )
 
 
 def _byteify(loaded_dict):
@@ -226,12 +231,12 @@ def load_currencies(path="currencies.json"):
 
     Raises:
         UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detacted
+                              correctly detected
     """
     if not os.path.exists(path):
         return refresh_currencies(path)
     last_update = int(time.time() - os.path.getmtime(path))
-    # Update if list if too old (30 days)
+    # Update currencies list if too old (30 days)
     if 2592000 < last_update:
         return refresh_currencies(path)
     with open(path) as file:
@@ -257,7 +262,7 @@ def refresh_currencies(path="currencies.json"):
     Raises:
         ApiError -- Raised when API is unreachable or return bad response
         UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detacted
+                              correctly detected
     """
     if sys.version_info.major == 2:
         import urllib2
@@ -269,7 +274,7 @@ def refresh_currencies(path="currencies.json"):
             raise ApiError("Unexpected Error", response["description"])
         currencies = _byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
-        from urllib import request, error
+        from urllib import error, request
 
         try:
             response = request.urlopen(CURRENCY_ENDPOINT)
@@ -325,7 +330,7 @@ def refresh_rates(config, path="rates.json"):
         AppIDError -- Raised when App ID can not be used
         ApiError -- Raised when API is unreachable or return bad response
         UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detacted
+                              correctly detected
     """
     if sys.version_info.major == 2:
         import urllib2
@@ -344,7 +349,7 @@ def refresh_rates(config, path="rates.json"):
                 raise ApiError("Unexpected Error", response["description"])
         rates = _byteify(json.load(response, "utf-8"))
     elif sys.version_info.major == 3:
-        from urllib import request, error
+        from urllib import error, request
 
         try:
             response = request.urlopen(RATE_ENDPOINT.format(config.app_id))
@@ -378,7 +383,7 @@ def load_alias(path="alias.json"):
 
     Raises:
         UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detacted
+                              correctly detected
     """
     if not os.path.exists(path):
         return {}
@@ -404,7 +409,7 @@ def load_symbols(path="symbols.json"):
 
     Raises:
         UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detacted
+                              correctly detected
     """
     if not os.path.exists(path):
         return {}
