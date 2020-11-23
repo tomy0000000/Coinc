@@ -163,7 +163,7 @@ def is_it_symbol(query):
     """
     symbols = load_alias()
     # Full-width to half-width transition
-    query = unicodedata.normalize("NFKC", query)
+    query = unicodedata.normalize("NFKC", query).upper()
     if sys.version_info.major == 2:
         query = query.encode("utf-8")
     if query in symbols:
