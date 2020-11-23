@@ -102,3 +102,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Nova
+.nova
+
+### Project Specific
+.alfredversionchecked
+info.plist
+rates.json

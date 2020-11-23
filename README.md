@@ -4,6 +4,10 @@
 
 # Coinc
 
+![GitHub All Releases](https://img.shields.io/github/downloads/tomy0000000/coinc/total?color=blue&label=Downloads&logo=Github)
+
+![GitHub](https://img.shields.io/github/license/tomy0000000/coinc?label=License)
+
 Coinc is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API.
 
 For list of support currencies, Installation, Setup and Usage, see [Wiki](../../wiki)
