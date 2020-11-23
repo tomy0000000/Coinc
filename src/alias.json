@@ -4,6 +4,7 @@
     "C$": "NIO",
     "CA$": "CAD",
     "CN¥": "CNY",
+    "RMB": "CNY",
     "HK$": "HKD",
     "L$": "LD",
     "MX$": "MXN",
