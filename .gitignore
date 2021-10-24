@@ -108,4 +108,5 @@ venv.bak/
 
 ### Project Specific
 .alfredversionchecked
+*.alfredworkflow
 rates.json
