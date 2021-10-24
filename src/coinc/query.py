@@ -53,7 +53,7 @@ class Query():
             if len(invalids) == 1:
                 raise QueryError("Invalid Currency", invalids[0])
             else:
-                raise QueryError("Invalid Currencies", u", ".join(invalids))
+                raise QueryError("Invalid Currencies", ", ".join(invalids))
 
     def _fill_value(self, value):
         """Fill value and run checks
@@ -247,7 +247,7 @@ class Query():
         """
         currencies = load_currencies()
         items = []
-        for abbreviation, currency in currencies.items():
+        for abbreviation, currency in list(currencies.items()):
             if currencies_filter(self.currency_two, abbreviation, currency):
                 items.append(
                     dict(title=currency,

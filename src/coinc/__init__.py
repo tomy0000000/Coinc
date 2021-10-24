@@ -32,7 +32,7 @@ def load(workflow):
                           valid=True,
                           arg="quit")
     if load_type == "all":
-        items = generate_list_items(query, currencies.keys(),
+        items = generate_list_items(query, list(currencies.keys()),
                                     workflow.settings["favorites"], True)
     elif load_type == "favorites":
         items = generate_list_items(query, workflow.settings["favorites"])
@@ -78,7 +78,7 @@ def add(workflow):
     workflow.settings["favorites"].append(currency)
     workflow.settings.save()
     currencies = load_currencies()
-    print("{} ({})".format(currencies[currency], currency))
+    print(("{} ({})".format(currencies[currency], currency)))
 
 
 def remove(workflow):
@@ -87,7 +87,7 @@ def remove(workflow):
     workflow.settings["favorites"].remove(currency)
     workflow.settings.save()
     currencies = load_currencies()
-    print("{} ({})".format(currencies[currency], currency))
+    print(("{} ({})".format(currencies[currency], currency)))
 
 
 def arrange(workflow):
@@ -143,7 +143,7 @@ def save_arrange(workflow):
     args = workflow.args[2:]
     workflow.logger.info(args)
     workflow.settings["favorites"] = [str(arg) for arg in args]
-    print(" ".join(args))
+    print((" ".join(args)))
 
 
 def refresh(workflow):
@@ -160,14 +160,14 @@ def refresh(workflow):
         refresh_currencies()
     except CoincError as error:
         workflow.logger.info(error)
-        print("{},{}".format("❌Error occured during refresh",
-                             "Coinc: {}".format(type(error).__name__)))
+        print(("{},{}".format("❌Error occured during refresh",
+                             "Coinc: {}".format(type(error).__name__))))
     except Exception as error:
         workflow.logger.info(error)
-        print("{},{}".format("❌Error occured during refresh",
-                             "Python: {}".format(type(error).__name__)))
-    print("{},{}".format("✅Currency list and rates have refreshed",
-                         str(datetime.now())))
+        print(("{},{}".format("❌Error occured during refresh",
+                             "Python: {}".format(type(error).__name__))))
+    print(("{},{}".format("✅Currency list and rates have refreshed",
+                         str(datetime.now()))))
 
 
 def help_me(workflow):

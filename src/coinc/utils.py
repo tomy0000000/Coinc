@@ -114,11 +114,11 @@ def _byteify(loaded_dict):
     """
     if isinstance(loaded_dict, dict):
         return {
-            _byteify(key): _byteify(value) for key, value in loaded_dict.iteritems()
+            _byteify(key): _byteify(value) for key, value in list(loaded_dict.items())
         }
     if isinstance(loaded_dict, list):
         return [_byteify(element) for element in loaded_dict]
-    if isinstance(loaded_dict, unicode):
+    if isinstance(loaded_dict, str):
         return loaded_dict.encode("utf-8")
     return loaded_dict
 
@@ -264,17 +264,8 @@ def refresh_currencies(path="currencies.json"):
         UnknownPythonError -- Raised when Python runtime version can not be
                               correctly detected
     """
-    if sys.version_info.major == 2:
-        import urllib2
-
-        try:
-            response = urllib2.urlopen(CURRENCY_ENDPOINT)
-        except urllib2.HTTPError as err:
-            response = _byteify(json.load(err, "utf-8"))
-            raise ApiError("Unexpected Error", response["description"])
-        currencies = _byteify(json.load(response, "utf-8"))
-    elif sys.version_info.major == 3:
-        from urllib import error, request
+    if sys.version_info.major == 3:
+        from urllib3 import error, request
 
         try:
             response = request.urlopen(CURRENCY_ENDPOINT)
@@ -332,24 +323,8 @@ def refresh_rates(config, path="rates.json"):
         UnknownPythonError -- Raised when Python runtime version can not be
                               correctly detected
     """
-    if sys.version_info.major == 2:
-        import urllib2
-
-        try:
-            response = urllib2.urlopen(RATE_ENDPOINT.format(config.app_id))
-        except urllib2.HTTPError as err:
-            response = _byteify(json.load(err, "utf-8"))
-            if err.code == 401:
-                raise AppIDError(
-                    "Invalid App ID: {}".format(config.app_id), response["description"]
-                )
-            elif err.code == 429:
-                raise AppIDError("Access Restricted", response["description"])
-            else:
-                raise ApiError("Unexpected Error", response["description"])
-        rates = _byteify(json.load(response, "utf-8"))
-    elif sys.version_info.major == 3:
-        from urllib import error, request
+    if sys.version_info.major == 3:
+        from urllib3 import error, request
 
         try:
             response = request.urlopen(RATE_ENDPOINT.format(config.app_id))
