@@ -4,6 +4,8 @@
 <dict>
 	<key>bundleid</key>
 	<string>tech.tomy.coinc</string>
+	<key>category</key>
+	<string>Tools</string>
 	<key>connections</key>
 	<dict>
 		<key>076F41F4-B7BA-4F1A-872C-C1D49034DD7E</key>
@@ -261,13 +263,25 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>6252CD30-4BFA-470C-AB2A-AB92BE252C15</string>
+				<string>C1035001-A940-4069-8404-23563C7CCF89</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
 				<key>sourceoutputuid</key>
 				<string>E321582E-0B25-4EE1-A3F5-155AB13C2188</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>6252CD30-4BFA-470C-AB2A-AB92BE252C15</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>sourceoutputuid</key>
+				<string>641AF5FF-E91D-4799-96AC-FEBADD5D88A9</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -419,6 +433,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string>+</string>
+				<key>url</key>
+				<string>{var:split2}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>C1035001-A940-4069-8404-23563C7CCF89</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>subtext</key>
 				<string>Convert {query} to your favorite currencies with Coinc</string>
 				<key>text</key>
@@ -474,12 +507,23 @@
 				<key>runningsubtext</key>
 				<string>Auto-updating rates...</string>
 				<key>script</key>
-				<string>python main.py convert $1
-#if command -v python3 1&gt;/dev/null 2&gt;&amp;1; then
-#	python3 main.py convert $1
-#else
-#	python main.py convert $1
-#fi</string>
+				<string>if command -v /usr/local/bin/python3 1&gt;/dev/null 2&gt;&amp;1; then
+	/usr/local/bin/python3 main.py convert $1
+else
+    echo '{
+  "items": [
+    {
+      "title": "Manual Upgrade is required",
+      "subtitle": "Hit enter to open migration Guide on GitHub",
+      "valid": true,
+      "arg": "open,https://github.com/tomy0000000/Coinc/wiki/V2-Migration-Guide",
+      "icon": {
+        "path": "hints/info.png"
+      }
+    }
+  ]
+}'
+fi</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -561,11 +605,25 @@
 						<key>matchmode</key>
 						<integer>0</integer>
 						<key>matchstring</key>
+						<string>open</string>
+						<key>outputlabel</key>
+						<string>open</string>
+						<key>uid</key>
+						<string>E321582E-0B25-4EE1-A3F5-155AB13C2188</string>
+					</dict>
+					<dict>
+						<key>inputstring</key>
+						<string>{var:split1}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
 						<string>redirect</string>
 						<key>outputlabel</key>
 						<string>redirect</string>
 						<key>uid</key>
-						<string>E321582E-0B25-4EE1-A3F5-155AB13C2188</string>
+						<string>641AF5FF-E91D-4799-96AC-FEBADD5D88A9</string>
 					</dict>
 				</array>
 				<key>elselabel</key>
@@ -1447,7 +1505,7 @@ For comprehensive Installation and Usage, see [Wiki](https://github.com/tomy0000
 			<key>xpos</key>
 			<integer>625</integer>
 			<key>ypos</key>
-			<integer>325</integer>
+			<integer>310</integer>
 		</dict>
 		<key>B99185CE-326C-4862-98C3-1766D4FB0CAA</key>
 		<dict>
@@ -1455,6 +1513,13 @@ For comprehensive Installation and Usage, see [Wiki](https://github.com/tomy0000
 			<integer>815</integer>
 			<key>ypos</key>
 			<integer>305</integer>
+		</dict>
+		<key>C1035001-A940-4069-8404-23563C7CCF89</key>
+		<dict>
+			<key>xpos</key>
+			<integer>815</integer>
+			<key>ypos</key>
+			<integer>35</integer>
 		</dict>
 		<key>C88F188B-CF51-4E6A-A989-74E113612621</key>
 		<dict>
@@ -1517,7 +1582,7 @@ For comprehensive Installation and Usage, see [Wiki](https://github.com/tomy0000
 		<string>APP_ID</string>
 	</array>
 	<key>version</key>
-	<string>1.3.1</string>
+	<string>2.0.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/tomy0000000/Coinc</string>
 </dict>

@@ -304,7 +304,12 @@ def load_rates(config, path="rates.json"):
     if not os.path.exists(path):
         return refresh_rates(config, path)
     with open(path) as file:
-        rates = _byteify(json.load(file, "utf-8"))
+        if sys.version_info.major == 2:
+            rates = _byteify(json.load(file, "utf-8"))
+        elif sys.version_info.major == 3:
+            rates = json.load(file)
+        else:
+            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
     last_update = int(time.time() - os.path.getmtime(path))
     if config.expire < last_update:
         return refresh_rates(config, path)

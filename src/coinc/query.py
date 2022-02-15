@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 """Query parser and conversion mappings"""
 from .exceptions import QueryError
-from .utils import (is_it_float, is_it_currency, is_it_symbol,
-                    is_it_something_mixed, load_currencies, load_rates,
-                    currencies_filter, generate_result_item)
+from .utils import (
+    currencies_filter,
+    generate_result_item,
+    is_it_currency,
+    is_it_float,
+    is_it_something_mixed,
+    is_it_symbol,
+    load_currencies,
+    load_rates,
+)
 
 
-class Query():
+class Query:
     """Query parser and conversion mappings
 
     Arguments:
@@ -15,6 +22,7 @@ class Query():
     Raises:
         QueryError -- Raised when invalid query were given
     """
+
     def __init__(self, args):
         self.value = None
         self.currency_one = None
@@ -71,8 +79,7 @@ class Query():
             self.value = value
             self.bit_pattern += 1
             return value
-        raise QueryError("Too many value",
-                         "Query can contain one numeric value only")
+        raise QueryError("Too many value", "Query can contain one numeric value only")
 
     def _fill_currency(self, currency, inplace=False):
         """Fill currency into proper position
@@ -101,8 +108,9 @@ class Query():
             self.currency_two = str(currency)
             self.bit_pattern += 4
             return currency
-        raise QueryError("Too many currencies",
-                         "Query can contain two currency code or symbol only")
+        raise QueryError(
+            "Too many currencies", "Query can contain two currency code or symbol only"
+        )
 
     def run_pattern(self, workflow):
         """Run Correspond Function by Pattern
@@ -120,12 +128,19 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
         workflow.logger.info("Run Pattern {}".format(self.bit_pattern))
+        rates = load_rates(workflow.config)
         func = getattr(self, "_pattern_{}".format(self.bit_pattern))
-        func(workflow)
+        func(workflow, rates)
 
-    def _pattern_0(self, workflow):
+        # Show rates update time
+        workflow.add_item(
+            title="Last Update", subtitle=rates["last_update"], icon="hints/info.png"
+        )
+
+    def _pattern_0(self, workflow, rates):
         """Run Pattern 0
 
         Query contains:
@@ -144,21 +159,19 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
-        rates = load_rates(workflow.config)
-        # Show rates update time
-        workflow.add_item(title="Last Update",
-                          subtitle=rates["last_update"],
-                          icon="hints/info.png")
         for currency in workflow.settings["favorites"]:
             if workflow.config.orientation in ["DEFAULT", "FROM_FAV"]:
-                generate_result_item(workflow, 1, currency,
-                                     workflow.config.base, rates, currency)
+                generate_result_item(
+                    workflow, 1, currency, workflow.config.base, rates, currency
+                )
             if workflow.config.orientation in ["DEFAULT", "TO_FAV"]:
-                generate_result_item(workflow, 1, workflow.config.base,
-                                     currency, rates, currency)
+                generate_result_item(
+                    workflow, 1, workflow.config.base, currency, rates, currency
+                )
 
-    def _pattern_1(self, workflow):
+    def _pattern_1(self, workflow, rates):
         """Run Pattern 1
 
         Query contains:
@@ -177,22 +190,29 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
-        rates = load_rates(workflow.config)
-        # Show rates update time
-        workflow.add_item(title="Last Update",
-                          subtitle=rates["last_update"],
-                          icon="hints/info.png")
         for currency in workflow.settings["favorites"]:
             if workflow.config.orientation in ["DEFAULT", "FROM_FAV"]:
-                generate_result_item(workflow, self.value, currency,
-                                     workflow.config.base, rates, currency)
+                generate_result_item(
+                    workflow,
+                    self.value,
+                    currency,
+                    workflow.config.base,
+                    rates,
+                    currency,
+                )
             if workflow.config.orientation in ["DEFAULT", "TO_FAV"]:
-                generate_result_item(workflow, self.value,
-                                     workflow.config.base, currency, rates,
-                                     currency)
+                generate_result_item(
+                    workflow,
+                    self.value,
+                    workflow.config.base,
+                    currency,
+                    rates,
+                    currency,
+                )
 
-    def _pattern_2(self, workflow):
+    def _pattern_2(self, workflow, rates):
         """Run Pattern 2
 
         Query contains:
@@ -208,14 +228,26 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
-        rates = load_rates(workflow.config)
-        generate_result_item(workflow, 1, self.currency_one,
-                             workflow.config.base, rates, self.currency_one)
-        generate_result_item(workflow, 1, workflow.config.base,
-                             self.currency_one, rates, self.currency_one)
+        generate_result_item(
+            workflow,
+            1,
+            self.currency_one,
+            workflow.config.base,
+            rates,
+            self.currency_one,
+        )
+        generate_result_item(
+            workflow,
+            1,
+            workflow.config.base,
+            self.currency_one,
+            rates,
+            self.currency_one,
+        )
 
-    def _pattern_3(self, workflow):
+    def _pattern_3(self, workflow, rates):
         """Run Pattern 3
 
         Query contains:
@@ -231,15 +263,27 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
-        rates = load_rates(workflow.config)
-        generate_result_item(workflow, self.value, self.currency_one,
-                             workflow.config.base, rates, self.currency_one)
+        generate_result_item(
+            workflow,
+            self.value,
+            self.currency_one,
+            workflow.config.base,
+            rates,
+            self.currency_one,
+        )
         if not self.binding:
-            generate_result_item(workflow, self.value, workflow.config.base,
-                                 self.currency_one, rates, self.currency_one)
+            generate_result_item(
+                workflow,
+                self.value,
+                workflow.config.base,
+                self.currency_one,
+                rates,
+                self.currency_one,
+            )
 
-    def _pattern_4(self, workflow):
+    def _pattern_4(self, workflow, rates):
         """
         Method 4
         @#$ (broken currency)
@@ -250,19 +294,22 @@ class Query():
         for abbreviation, currency in currencies.items():
             if currencies_filter(self.currency_two, abbreviation, currency):
                 items.append(
-                    dict(title=currency,
-                         subtitle=abbreviation,
-                         icon="flags/{}.png".format(abbreviation),
-                         valid=True,
-                         autocomplete=abbreviation,
-                         arg="redirect,{}".format(abbreviation)))
+                    dict(
+                        title=currency,
+                        subtitle=abbreviation,
+                        icon="flags/{}.png".format(abbreviation),
+                        valid=True,
+                        autocomplete=abbreviation,
+                        arg="redirect,{}".format(abbreviation),
+                    )
+                )
         items = sorted(items, key=lambda item: item["subtitle"])
         for item in items:
             workflow.add_item(**item)
         if not items:
             raise QueryError("Invalid Currency", self.currency_two)
 
-    def _pattern_6(self, workflow):
+    def _pattern_6(self, workflow, rates):
         """Run Pattern 6
 
         Query contains:
@@ -278,14 +325,16 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
-        rates = load_rates(workflow.config)
-        generate_result_item(workflow, 1, self.currency_one, self.currency_two,
-                             rates, self.currency_two)
-        generate_result_item(workflow, 1, self.currency_two, self.currency_one,
-                             rates, self.currency_one)
+        generate_result_item(
+            workflow, 1, self.currency_one, self.currency_two, rates, self.currency_two
+        )
+        generate_result_item(
+            workflow, 1, self.currency_two, self.currency_one, rates, self.currency_one
+        )
 
-    def _pattern_7(self, workflow):
+    def _pattern_7(self, workflow, rates):
         """Run Pattern 7
 
         Query contains:
@@ -301,10 +350,22 @@ class Query():
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
+            rates {dict} -- dict containing rates
         """
-        rates = load_rates(workflow.config)
-        generate_result_item(workflow, self.value, self.currency_one,
-                             self.currency_two, rates, self.currency_two)
+        generate_result_item(
+            workflow,
+            self.value,
+            self.currency_one,
+            self.currency_two,
+            rates,
+            self.currency_two,
+        )
         if not self.binding:
-            generate_result_item(workflow, self.value, self.currency_two,
-                                 self.currency_one, rates, self.currency_one)
+            generate_result_item(
+                workflow,
+                self.value,
+                self.currency_two,
+                self.currency_one,
+                rates,
+                self.currency_one,
+            )
