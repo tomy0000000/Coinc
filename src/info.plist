@@ -507,8 +507,16 @@
 				<key>runningsubtext</key>
 				<string>Auto-updating rates...</string>
 				<key>script</key>
-				<string>if command -v /usr/local/bin/python3 1&gt;/dev/null 2&gt;&amp;1; then
-	/usr/local/bin/python3 main.py convert $1
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+if command -v "$HOMEBREW_PREFIX/bin/python3" 1&gt;/dev/null 2&gt;&amp;1; then
+	$HOMEBREW_PREFIX/bin/python3 main.py convert $1
 else
     echo '{
   "items": [
@@ -523,7 +531,8 @@ else
     }
   ]
 }'
-fi</string>
+fi
+</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -702,7 +711,16 @@ fi</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>python main.py load all $1</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py load all $1
+</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -897,7 +915,16 @@ fi</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>python main.py load favorites $1</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py load favorites $1
+</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1043,7 +1070,16 @@ fi</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>python main.py arrange $1</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py arrange $1
+</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
