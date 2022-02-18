@@ -789,7 +789,15 @@ $HOMEBREW_PREFIX/bin/python3 main.py load all $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python main.py add $1</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py add $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -953,7 +961,15 @@ $HOMEBREW_PREFIX/bin/python3 main.py load favorites $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python main.py remove $1</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py remove $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1006,7 +1022,15 @@ $HOMEBREW_PREFIX/bin/python3 main.py load favorites $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python main.py save_arrange $1</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py save_arrange $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1242,7 +1266,15 @@ $HOMEBREW_PREFIX/bin/python3 main.py arrange $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>python main.py refresh</string>
+				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
+if [[ "${UNAME_MACHINE}" == "arm64" ]]
+then
+  HOMEBREW_PREFIX="/opt/homebrew"
+else
+  HOMEBREW_PREFIX="/usr/local"
+fi
+
+$HOMEBREW_PREFIX/bin/python3 main.py refresh</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
