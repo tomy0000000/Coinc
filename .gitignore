@@ -109,3 +109,4 @@ venv.bak/
 ### Project Specific
 .alfredversionchecked
 rates.json
+currencies.json
