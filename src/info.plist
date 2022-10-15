@@ -507,16 +507,9 @@
 				<key>runningsubtext</key>
 				<string>Auto-updating rates...</string>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-if command -v "$HOMEBREW_PREFIX/bin/python3" 1&gt;/dev/null 2&gt;&amp;1; then
-	$HOMEBREW_PREFIX/bin/python3 main.py convert $1
+				<string>
+if command -v "python3" 1&gt;/dev/null 2&gt;&amp;1; then
+	python3 main.py convert $1
 else
     echo '{
   "items": [
@@ -711,16 +704,7 @@ fi
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py load all $1
-</string>
+				<string>python3 main.py load all $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -789,15 +773,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py load all $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py add $1</string>
+				<string>python3 main.py add $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -923,16 +899,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py add $1</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py load favorites $1
-</string>
+				<string>python3 main.py load favorites $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -961,15 +928,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py load favorites $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py remove $1</string>
+				<string>python3 main.py remove $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1022,15 +981,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py remove $1</string>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py save_arrange $1</string>
+				<string>python3 main.py save_arrange $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1094,16 +1045,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py save_arrange $1</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py arrange $1
-</string>
+				<string>python3 main.py arrange $1</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1266,15 +1208,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py arrange $1
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>UNAME_MACHINE="$(/usr/bin/uname -m)"
-if [[ "${UNAME_MACHINE}" == "arm64" ]]
-then
-  HOMEBREW_PREFIX="/opt/homebrew"
-else
-  HOMEBREW_PREFIX="/usr/local"
-fi
-
-$HOMEBREW_PREFIX/bin/python3 main.py refresh</string>
+				<string>python3 main.py refresh</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
@@ -1334,7 +1268,7 @@ $HOMEBREW_PREFIX/bin/python3 main.py refresh</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
-				<string>python main.py help_me</string>
+				<string>python3 main.py help_me</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
