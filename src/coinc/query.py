@@ -4,10 +4,10 @@ from .exceptions import QueryError
 from .utils import (
     currencies_filter,
     generate_result_item,
+    is_it_alias,
     is_it_currency,
     is_it_float,
     is_it_something_mixed,
-    is_it_symbol,
     load_currencies,
     load_rates,
 )
@@ -39,9 +39,9 @@ class Query:
             if currency:
                 self._fill_currency(currency)
                 continue
-            symbol = is_it_symbol(arg)
-            if symbol:
-                self._fill_currency(symbol)
+            aliases = is_it_alias(arg)
+            if aliases:
+                self._fill_currency(aliases)
                 continue
             mixed = is_it_something_mixed(arg)
             if mixed:

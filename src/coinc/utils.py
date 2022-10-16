@@ -127,7 +127,7 @@ def is_it_currency(query):
     return None
 
 
-def is_it_symbol(query):
+def is_it_alias(query):
     """Check if query is a valid currency symbol
 
     Arguments:
@@ -137,11 +137,11 @@ def is_it_symbol(query):
         str -- Normalized currency code
         None -- if query failed to be parsed
     """
-    symbols = load_alias()
+    aliases = load_alias()
     # Full-width to half-width transition
     query = unicodedata.normalize("NFKC", query).upper()
-    if query in symbols:
-        return symbols[query]
+    if query in aliases:
+        return aliases[query]
     return None
 
 
@@ -175,17 +175,25 @@ def is_it_something_mixed(query):
         if value and currency:
             return (value, currency)
 
-    # Type 3: {symbol}{number}
+    # Type 3: {alias}{number}
     match_result = re.match(
         r"^(.+?)([0-9,]+(\.\d+)?)$", query
     )  # Use '+?' for non-progressive match
     if match_result:
         value = is_it_float(match_result.groups()[1])
-        currency_symbol = is_it_symbol(match_result.groups()[0])
-        if value and currency_symbol:
-            return (value, currency_symbol)
+        currency_alias = is_it_alias(match_result.groups()[0])
+        if value and currency_alias:
+            return (value, currency_alias)
 
-    return None
+    # Type 4: {number}{alias}
+    match_result = re.match(
+        r"^([0-9,]+(\.\d+)?)(.*?)$", query
+    )  # Use '+?' for non-progressive match
+    if match_result:
+        value = is_it_float(match_result.groups()[0])
+        currency_alias = is_it_alias(match_result.groups()[2])
+        if value and currency_alias:
+            return (value, currency_alias)
 
 
 def load_currencies(path="currencies.json"):
