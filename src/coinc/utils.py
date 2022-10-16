@@ -15,10 +15,10 @@ OLD_BUNDLE_ID = "tech.tomy.coon"
 NEW_BUNDLE_ID = "tech.tomy.coinc"
 WORKFLOW_DATA_PATH = "~/Library/Application Support/Alfred/Workflow Data"
 RATE_ENDPOINT = (
-    "https://openexchangerates.org/api/latest.json" "?show_alternative=1&app_id={}"
+    "https://openexchangerates.org/api/latest.json?show_alternative=1&app_id={}"
 )
 CURRENCY_ENDPOINT = (
-    "https://openexchangerates.org/api/currencies.json" "?show_alternative=1"
+    "https://openexchangerates.org/api/currencies.json?show_alternative=1"
 )
 
 
@@ -314,7 +314,7 @@ def load_rates(config, path="rates.json"):
     if config.expire < last_update:
         return refresh_rates(config, path)
     # Inject rates file modification datetime
-    rates["rates"]["last_update"] = "{} seconds ago".format(last_update)
+    rates["rates"]["last_update"] = f"{last_update} seconds ago"
     return rates["rates"]
 
 
@@ -346,7 +346,7 @@ def refresh_rates(config, path="rates.json"):
             response = _byteify(json.load(err, "utf-8"))
             if err.code == 401:
                 raise AppIDError(
-                    "Invalid App ID: {}".format(config.app_id), response["description"]
+                    f"Invalid App ID: {config.app_id}", response["description"]
                 )
             elif err.code == 429:
                 raise AppIDError("Access Restricted", response["description"])
@@ -362,7 +362,7 @@ def refresh_rates(config, path="rates.json"):
             response = json.load(err)
             if err.code == 401:
                 raise AppIDError(
-                    "Invalid App ID: {}".format(config.app_id), response["description"]
+                    f"Invalid App ID: {config.app_id}", response["description"]
                 )
             elif err.code == 429:
                 raise AppIDError("Access Restricted", response["description"])
@@ -446,19 +446,19 @@ def generate_result_item(workflow, value, from_currency, to_currency, rates, ico
     result = str(
         _calculate(value, from_currency, to_currency, rates, workflow.config.precision)
     )
-    result_symboled = "{}{}".format(symbols[to_currency], result)
+    result_symboled = f"{symbols[to_currency]}{result}"
     item = workflow.add_item(
-        title="{} {} = {} {}".format(value, from_currency, result, to_currency),
-        subtitle="Copy '{}' to clipboard".format(result),
-        icon="flags/{}.png".format(icon),
+        title=f"{value} {from_currency} = {result} {to_currency}",
+        subtitle=f"Copy '{result}' to clipboard",
+        icon=f"flags/{icon}.png",
         valid=True,
         arg=result,
         copytext=result,
     )
     item.add_modifier(
         key="alt",
-        subtitle="Copy '{}' to clipboard".format(result_symboled),
-        icon="flags/{}.png".format(icon),
+        subtitle=f"Copy '{result_symboled}' to clipboard",
+        icon=f"flags/{icon}.png",
         valid=True,
         arg=result_symboled,
     )
@@ -490,7 +490,7 @@ def generate_list_items(query, currency_codes, favorite_filter=None, sort=False)
                 {
                     "title": currencies[code],
                     "subtitle": code,
-                    "icon": "flags/{}.png".format(code),
+                    "icon": f"flags/{code}.png",
                     "valid": True,
                     "arg": code,
                 }

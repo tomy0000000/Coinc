@@ -77,17 +77,19 @@ def convert(workflow):
         query = Query(workflow.args[1:])
         query.run_pattern(workflow)
     except CoincError as error:
-        workflow.logger.info("Coinc: {}".format(type(error).__name__))
+        workflow.logger.info(f"Coinc: {type(error).__name__}")
         workflow.logger.info(error)
         workflow.add_item(
             title=error.args[0], subtitle=error.args[1], icon="hints/cancel.png"
         )
     # except Exception as error:
-    #     workflow.logger.info("Python: {}".format(type(error).__name__))
+    #     workflow.logger.info(f"Python: {type(error).__name__}")
     #     workflow.logger.info(error)
-    #     workflow.add_item(title="Python Error: {}".format(type(error).__name__),
-    #                       subtitle=error.args[0],
-    #                       icon="hints/cancel.png")
+    #     workflow.add_item(
+    #         title=f"Python Error: {type(error).__name__}",
+    #         subtitle=error.args[0],
+    #         icon="hints/cancel.png",
+    #     )
     workflow.send_feedback()
 
 
@@ -97,7 +99,7 @@ def add(workflow):
     workflow.settings["favorites"].append(currency)
     workflow.settings.save()
     currencies = load_currencies()
-    print("{} ({})".format(currencies[currency], currency))
+    print(f"{currencies[currency]} ({currency})")
 
 
 def remove(workflow):
@@ -106,7 +108,7 @@ def remove(workflow):
     workflow.settings["favorites"].remove(currency)
     workflow.settings.save()
     currencies = load_currencies()
-    print("{} ({})".format(currencies[currency], currency))
+    print(f"{currencies[currency]} ({currency})")
 
 
 def arrange(workflow):
@@ -120,24 +122,22 @@ def arrange(workflow):
             subtitle="Save current arrangement",
             icon="hints/save.png",
             valid=True,
-            arg="save {}".format(" ".join(args)),
+            arg=f"save {' '.join(args)}",
         )
         workflow.add_item(
             title="Cancel",
             subtitle="Cancel the operation without saving",
             icon="hints/cancel.png",
             valid=True,
-            arg="cancel {}".format(" ".join(args)),
+            arg=f"cancel {' '.join(args)}",
         )
     for abbreviation in favorites:
         if abbreviation not in args:
-            query = (
-                "{} {}".format(" ".join(args), abbreviation) if args else abbreviation
-            )
+            query = f"{' '.join(args)} {abbreviation}" if args else abbreviation
             workflow.add_item(
                 title=currencies[abbreviation],
                 subtitle=abbreviation,
-                icon="flags/{}.png".format(abbreviation),
+                icon=f"flags/{abbreviation}.png",
                 valid=True,
                 arg=query,
                 autocomplete=query,
@@ -147,11 +147,11 @@ def arrange(workflow):
     for arg in args:
         if arg in favorites:
             workflow.add_item(
-                title=currencies[arg], subtitle=arg, icon="flags/{}.png".format(arg)
+                title=currencies[arg], subtitle=arg, icon=f"flags/{arg}.png"
             )
         else:
             workflow.add_item(
-                title="Currency {} isn't in favortie list".format(arg),
+                title=f"Currency {arg} isn't in favortie list",
                 icon="hints/cancel.png",
             )
             workflow.send_feedback()
@@ -189,23 +189,11 @@ def refresh(workflow):
         refresh_currencies()
     except CoincError as error:
         workflow.logger.info(error)
-        print(
-            "{},{}".format(
-                "❌Error occured during refresh",
-                "Coinc: {}".format(type(error).__name__),
-            )
-        )
+        print(f"❌Error occured during refresh,Coinc: {type(error).__name__}")
     except Exception as error:
         workflow.logger.info(error)
-        print(
-            "{},{}".format(
-                "❌Error occured during refresh",
-                "Python: {}".format(type(error).__name__),
-            )
-        )
-    print(
-        "{},{}".format("✅Currency list and rates have refreshed", str(datetime.now()))
-    )
+        print(f"❌Error occured during refresh,Python: {type(error).__name__}")
+    print(f"✅Currency list and rates have refreshed,{datetime.now()}")
 
 
 def help_me(workflow):

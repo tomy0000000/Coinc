@@ -61,7 +61,7 @@ class Query:
             if len(invalids) == 1:
                 raise QueryError("Invalid Currency", invalids[0])
             else:
-                raise QueryError("Invalid Currencies", u", ".join(invalids))
+                raise QueryError("Invalid Currencies", ", ".join(invalids))
 
     def _fill_value(self, value):
         """Fill value and run checks
@@ -130,9 +130,9 @@ class Query:
             workflow {workflow.Workflow3} -- workflow object
             rates {dict} -- dict containing rates
         """
-        workflow.logger.info("Run Pattern {}".format(self.bit_pattern))
+        workflow.logger.info(f"Run Pattern {self.bit_pattern}")
         rates = load_rates(workflow.config)
-        func = getattr(self, "_pattern_{}".format(self.bit_pattern))
+        func = getattr(self, f"_pattern_{self.bit_pattern}")
         func(workflow, rates)
 
         # Show rates update time
@@ -297,10 +297,10 @@ class Query:
                     dict(
                         title=currency,
                         subtitle=abbreviation,
-                        icon="flags/{}.png".format(abbreviation),
+                        icon=f"flags/{abbreviation}.png",
                         valid=True,
                         autocomplete=abbreviation,
-                        arg="redirect,{}".format(abbreviation),
+                        arg=f"redirect,{abbreviation}",
                     )
                 )
         items = sorted(items, key=lambda item: item["subtitle"])
