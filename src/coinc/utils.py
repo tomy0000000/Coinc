@@ -69,6 +69,9 @@ def init_workflow(workflow):
     from .config import Config
 
     workflow.config = Config()
+    workflow.logger.info(
+        f"Locale: {'(System)' if not workflow.config.locale else workflow.config.locale}"
+    )
     return workflow
 
 
@@ -339,17 +342,17 @@ def generate_result_item(workflow, value, from_currency, to_currency, rates, ico
         workflow.workflow3.Item3 -- Item3 object generated
     """
     symbols = load_symbols()
-    result = str(
-        _calculate(value, from_currency, to_currency, rates, workflow.config.precision)
+    result = _calculate(
+        value, from_currency, to_currency, rates, workflow.config.precision
     )
-    result_symboled = f"{symbols[to_currency]}{result}"
+    result_symboled = f"{symbols[to_currency]}{result:n}"
     item = workflow.add_item(
-        title=f"{value} {from_currency} = {result} {to_currency}",
-        subtitle=f"Copy '{result}' to clipboard",
+        title=f"{value:n} {from_currency} = {result:n} {to_currency}",
+        subtitle=f"Copy '{result:n}' to clipboard",
         icon=f"flags/{icon}.png",
         valid=True,
-        arg=result,
-        copytext=result,
+        arg=f"{result:n}",
+        copytext=f"{result:n}",
     )
     item.add_modifier(
         key="alt",

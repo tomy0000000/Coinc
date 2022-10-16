@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Helper class for loading config set in Alfred Variable Sheet"""
+import locale
 import os
 
 from .exceptions import ConfigError
@@ -21,7 +22,7 @@ class Config:
             raise ConfigError(
                 "Please setup APP_ID to refresh new rates",
                 (
-                    "Paste your App ID into workflow environment"
+                    "Paste your App ID into workflow environment "
                     "variables sheet in Alfred Preferences"
                 ),
             )
@@ -35,7 +36,7 @@ class Config:
             raise ConfigError(
                 f"Invalid base currency: {base_raw}",
                 (
-                    "Fix this in workflow environment"
+                    "Fix this in workflow environment "
                     "variables sheet in Alfred Preferences"
                 ),
             )
@@ -47,7 +48,7 @@ class Config:
             raise ConfigError(
                 f"Invalid expire value: {expire_raw}",
                 (
-                    "Fix this in workflow environment"
+                    "Fix this in workflow environment "
                     "variables sheet in Alfred Preferences"
                 ),
             )
@@ -60,7 +61,7 @@ class Config:
             raise ConfigError(
                 f"Invalid orientation value: {orientation_raw}",
                 (
-                    "Fix this in workflow environment"
+                    "Fix this in workflow environment "
                     "variables sheet in Alfred Preferences"
                 ),
             )
@@ -72,7 +73,20 @@ class Config:
             raise ConfigError(
                 f"Invalid precision value: {precision_raw}",
                 (
-                    "Fix this in workflow environment"
+                    "Fix this in workflow environment "
                     "variables sheet in Alfred Preferences"
                 ),
             )
+        # Locale
+        locale_raw = os.getenv("LOCALE", "")
+        try:
+            locale.setlocale(locale.LC_ALL, locale_raw)
+        except locale.Error:
+            raise ConfigError(
+                f"Invalid locale value: {locale_raw}",
+                (
+                    "Fix this in workflow environment "
+                    "variables sheet in Alfred Preferences"
+                ),
+            )
+        self.locale = locale_raw
