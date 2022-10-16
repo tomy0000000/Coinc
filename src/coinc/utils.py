@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Helper Functions"""
 import json
 import os
@@ -9,6 +8,9 @@ import unicodedata
 from decimal import Decimal
 from urllib import error, request
 
+import workflow
+
+from .config import Config
 from .exceptions import ApiError, AppIDError
 
 INFO_PLIST_PATH = "info.plist"
@@ -23,7 +25,7 @@ CURRENCY_ENDPOINT = (
 )
 
 
-def manual_update_patch(workflow):
+def manual_update_patch(workflow: workflow.Workflow3) -> bool:
     """manual update metadatas for v1.3.0 name change
 
     Update include two section, change Bundle ID in info.plist to a new one,
@@ -38,10 +40,10 @@ def manual_update_patch(workflow):
     updated = False
     # Fix Bundle ID
     if workflow.bundleid.encode("utf-8") == OLD_BUNDLE_ID:
-        with open(INFO_PLIST_PATH, "rw") as file:
+        with open(INFO_PLIST_PATH, "rwb") as file:
             info = plistlib.load(file)
             info["bundleid"] = NEW_BUNDLE_ID
-            plistlib.dump(info, INFO_PLIST_PATH)
+            plistlib.dump(info, file)
         workflow.logger.info("Bundle ID modified")
         updated = True
 
@@ -55,7 +57,7 @@ def manual_update_patch(workflow):
     return updated
 
 
-def init_workflow(workflow):
+def init_workflow(workflow: workflow.Workflow3) -> workflow.Workflow3:
     """Run operation to get workflow ready
 
     Inject config into Workflow
@@ -75,7 +77,9 @@ def init_workflow(workflow):
     return workflow
 
 
-def _calculate(value, from_currency, to_currency, rates, precision):
+def _calculate(
+    value: float, from_currency: str, to_currency: str, rates: dict, precision: int
+) -> Decimal:
     """The Main Calculation of Conversion
 
     Arguments:
@@ -86,7 +90,7 @@ def _calculate(value, from_currency, to_currency, rates, precision):
         precision {int} -- precision point to be round
 
     Returns:
-        float -- The result of the conversion
+        Decimal -- The result of the conversion
     """
     return round(
         Decimal(value) * (Decimal(rates[to_currency]) / Decimal(rates[from_currency])),
@@ -94,7 +98,7 @@ def _calculate(value, from_currency, to_currency, rates, precision):
     )
 
 
-def is_it_float(query):
+def is_it_float(query: str) -> float | None:
     """Check if query is a valid number
 
     Arguments:
@@ -110,7 +114,7 @@ def is_it_float(query):
         return None
 
 
-def is_it_currency(query):
+def is_it_currency(query: str) -> str | None:
     """Check if query is a valid currency
 
     Arguments:
@@ -127,7 +131,7 @@ def is_it_currency(query):
     return None
 
 
-def is_it_alias(query):
+def is_it_alias(query: str) -> str | None:
     """Check if query is a valid currency symbol
 
     Arguments:
@@ -145,7 +149,7 @@ def is_it_alias(query):
     return None
 
 
-def is_it_something_mixed(query):
+def is_it_something_mixed(query: str) -> tuple[float, str] | None:
     """Check if query is Mixed with value and currency
 
     [description]
@@ -195,8 +199,11 @@ def is_it_something_mixed(query):
         if value and currency_alias:
             return (value, currency_alias)
 
+    # If nothing matched
+    return None
 
-def load_currencies(path="currencies.json"):
+
+def load_currencies(path: str | os.PathLike = "currencies.json") -> dict:
     """Load currency list, create one if not exists
 
     Keyword Arguments:
@@ -217,7 +224,7 @@ def load_currencies(path="currencies.json"):
     return currencies
 
 
-def refresh_currencies(path="currencies.json"):
+def refresh_currencies(path: str | os.PathLike = "currencies.json") -> dict:
     """Fetch and save the newest currency list
 
     Keyword Arguments:
@@ -241,7 +248,7 @@ def refresh_currencies(path="currencies.json"):
     return currencies
 
 
-def load_rates(config, path="rates.json"):
+def load_rates(config: Config, path: str | os.PathLike = "rates.json") -> dict:
     """Load rates, update if not exist or too-old
 
     Arguments:
@@ -265,7 +272,7 @@ def load_rates(config, path="rates.json"):
     return rates["rates"]
 
 
-def refresh_rates(config, path="rates.json"):
+def refresh_rates(config: Config, path: str | os.PathLike = "rates.json") -> dict:
     """Fetch and save the newest rates
 
     Arguments:
@@ -302,7 +309,7 @@ def refresh_rates(config, path="rates.json"):
     return rates["rates"]
 
 
-def load_alias(path="alias.json"):
+def load_alias(path: str | os.PathLike = "alias.json") -> dict:
     """Load alias, return empty dict if file not found
 
     Keyword Arguments:
@@ -318,7 +325,7 @@ def load_alias(path="alias.json"):
     return alias
 
 
-def load_symbols(path="symbols.json"):
+def load_symbols(path: str | os.PathLike = "symbols.json") -> dict:
     """Load symbols, return empty dict if file not found
 
     Keyword Arguments:
@@ -335,7 +342,14 @@ def load_symbols(path="symbols.json"):
     return symbols
 
 
-def generate_result_item(workflow, value, from_currency, to_currency, rates, icon):
+def generate_result_item(
+    workflow: workflow.Workflow3,
+    value: float,
+    from_currency: str,
+    to_currency: str,
+    rates: dict,
+    icon: str,
+) -> workflow.workflow3.Item3:
     """Calculate conversion result and append item to workflow
 
     Arguments:
@@ -372,7 +386,12 @@ def generate_result_item(workflow, value, from_currency, to_currency, rates, ico
     return item
 
 
-def generate_list_items(query, currency_codes, favorite_filter=None, sort=False):
+def generate_list_items(
+    query: str,
+    currency_codes: list,
+    favorite_filter: list | None = None,
+    sort: bool = False,
+) -> list:
     """Generate items from currency codes that can be add to workflow
 
     Arguments:
@@ -407,7 +426,9 @@ def generate_list_items(query, currency_codes, favorite_filter=None, sort=False)
     return items
 
 
-def currencies_filter(query, code, currency_name, favorites=None):
+def currencies_filter(
+    query: str, code: str, currency_name: str, favorites: list | None = None
+) -> bool:
     """Determine whether query matched with the code or currency name
 
     For query to match, it must not be a item in favorites

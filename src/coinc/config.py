@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 """Helper class for loading config set in Alfred Variable Sheet"""
 import locale
 import os
 
 from .exceptions import ConfigError
-from .utils import load_currencies
 
 
 class Config:
@@ -15,7 +13,9 @@ class Config:
                        filled in Configuration Sheet
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
+        from .utils import load_currencies
+
         # App_ID
         app_id = os.getenv("APP_ID")
         if not app_id:

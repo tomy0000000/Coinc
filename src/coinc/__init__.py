@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
 """Functions to be called by workflow"""
 import os
 from datetime import datetime
+
+from workflow import Workflow3
 
 from .exceptions import CoincError, ConfigError
 from .query import Query
@@ -25,7 +26,7 @@ __all__ = [
 ]
 
 
-def load(workflow):
+def load(workflow: Workflow3) -> None:
     """Load all/favorites currencies"""
     currencies = load_currencies()
     if len(workflow.args) > 3:
@@ -33,7 +34,7 @@ def load(workflow):
             title="One Currency at a time, please", icon="hints/cancel.png"
         )
         workflow.send_feedback()
-        return None
+        return
     load_type = str(workflow.args[1])
     workflow.logger.info(load_type)
     args = workflow.args[2:]
@@ -48,7 +49,7 @@ def load(workflow):
         )
     if load_type == "all":
         items = generate_list_items(
-            query, currencies.keys(), workflow.settings["favorites"], True
+            query, list(currencies.keys()), workflow.settings["favorites"], True
         )
     elif load_type == "favorites":
         items = generate_list_items(query, workflow.settings["favorites"])
@@ -63,14 +64,14 @@ def load(workflow):
         )
         if load_type == "all":
             workflow.add_item(
-                title="Kindly Notice",
-                subtitle="Your existed favorites won't show up in here",
+                title="Kind notice",
+                subtitle="Your existing favorites won't show up here",
                 icon="hints/info.png",
             )
     workflow.send_feedback()
 
 
-def convert(workflow):
+def convert(workflow: Workflow3) -> None:
     """Run conversion patterns"""
     try:
         init_workflow(workflow)
@@ -85,7 +86,7 @@ def convert(workflow):
     workflow.send_feedback()
 
 
-def add(workflow):
+def add(workflow: Workflow3) -> None:
     """Add currency to favorite list"""
     currency = workflow.args[1]
     workflow.settings["favorites"].append(currency)
@@ -94,7 +95,7 @@ def add(workflow):
     print(f"{currencies[currency]} ({currency})")
 
 
-def remove(workflow):
+def remove(workflow: Workflow3) -> None:
     """Remove currency from favorite list"""
     currency = workflow.args[1]
     workflow.settings["favorites"].remove(currency)
@@ -103,7 +104,7 @@ def remove(workflow):
     print(f"{currencies[currency]} ({currency})")
 
 
-def arrange(workflow):
+def arrange(workflow: Workflow3) -> None:
     """Rearrange favorite currencies order"""
     currencies = load_currencies()
     favorites = workflow.settings["favorites"]
@@ -159,7 +160,7 @@ def arrange(workflow):
     workflow.send_feedback()
 
 
-def save_arrange(workflow):
+def save_arrange(workflow: Workflow3) -> None:
     """Save new favorite arrangement"""
     args = workflow.args[2:]
     workflow.logger.info(args)
@@ -167,7 +168,7 @@ def save_arrange(workflow):
     print(" ".join(args))
 
 
-def refresh(workflow):
+def refresh(workflow: Workflow3) -> None:
     """Manually trigger rates refresh"""
     try:
         init_workflow(workflow)
@@ -185,7 +186,7 @@ def refresh(workflow):
     print(f"✅ Currency list and rates have refreshed,{datetime.now()}")
 
 
-def help_me(workflow):
+def help_me(workflow: Workflow3) -> None:
     """Function for showing example usage"""
     workflow.add_item(
         title="cur",

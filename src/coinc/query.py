@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
 """Query parser and conversion mappings"""
+import workflow
+
 from .exceptions import QueryError
 from .utils import (
     currencies_filter,
@@ -23,12 +24,12 @@ class Query:
         QueryError -- Raised when invalid query were given
     """
 
-    def __init__(self, args):
-        self.value = None
-        self.currency_one = None
-        self.currency_two = None
-        self.bit_pattern = 0
-        self.binding = False
+    def __init__(self, args: list) -> None:
+        self.value: float | None = None
+        self.currency_one: str | None = None
+        self.currency_two: str | None = None
+        self.bit_pattern: int = 0
+        self.binding: bool = False
         invalids = []
         for arg in args:
             value = is_it_float(arg)
@@ -63,7 +64,7 @@ class Query:
             else:
                 raise QueryError("Invalid Currencies", ", ".join(invalids))
 
-    def _fill_value(self, value):
+    def _fill_value(self, value: float) -> float:
         """Fill value and run checks
 
         Arguments:
@@ -81,7 +82,7 @@ class Query:
             return value
         raise QueryError("Too many value", "Query can contain one numeric value only")
 
-    def _fill_currency(self, currency, inplace=False):
+    def _fill_currency(self, currency: str, inplace: bool = False) -> str:
         """Fill currency into proper position
 
         Arguments:
@@ -112,7 +113,7 @@ class Query:
             "Too many currencies", "Query can contain two currency code or symbol only"
         )
 
-    def run_pattern(self, workflow):
+    def run_pattern(self, workflow: workflow.Workflow3) -> None:
         """Run Correspond Function by Pattern
 
         | Pattern | currency_two | currency_one | value |
@@ -128,9 +129,11 @@ class Query:
 
         Arguments:
             workflow {workflow.Workflow3} -- workflow object
-            rates {dict} -- dict containing rates
         """
         workflow.logger.info(f"Run Pattern {self.bit_pattern}")
+        workflow.logger.info(f"Value: {self.value}")
+        workflow.logger.info(f"Currency One: {self.currency_one}")
+        workflow.logger.info(f"Currency Two: {self.currency_two}")
         rates = load_rates(workflow.config)
         func = getattr(self, f"_pattern_{self.bit_pattern}")
         func(workflow, rates)
@@ -140,7 +143,7 @@ class Query:
             title="Last Update", subtitle=rates["last_update"], icon="hints/info.png"
         )
 
-    def _pattern_0(self, workflow, rates):
+    def _pattern_0(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """Run Pattern 0
 
         Query contains:
@@ -171,7 +174,7 @@ class Query:
                     workflow, 1, workflow.config.base, currency, rates, currency
                 )
 
-    def _pattern_1(self, workflow, rates):
+    def _pattern_1(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """Run Pattern 1
 
         Query contains:
@@ -212,7 +215,7 @@ class Query:
                     currency,
                 )
 
-    def _pattern_2(self, workflow, rates):
+    def _pattern_2(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """Run Pattern 2
 
         Query contains:
@@ -247,7 +250,7 @@ class Query:
             self.currency_one,
         )
 
-    def _pattern_3(self, workflow, rates):
+    def _pattern_3(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """Run Pattern 3
 
         Query contains:
@@ -283,7 +286,7 @@ class Query:
                 self.currency_one,
             )
 
-    def _pattern_4(self, workflow, rates):
+    def _pattern_4(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """
         Method 4
         @#$ (broken currency)
@@ -309,7 +312,7 @@ class Query:
         if not items:
             raise QueryError("Invalid Currency", self.currency_two)
 
-    def _pattern_6(self, workflow, rates):
+    def _pattern_6(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """Run Pattern 6
 
         Query contains:
@@ -334,7 +337,7 @@ class Query:
             workflow, 1, self.currency_two, self.currency_one, rates, self.currency_one
         )
 
-    def _pattern_7(self, workflow, rates):
+    def _pattern_7(self, workflow: workflow.Workflow3, rates: dict) -> None:
         """Run Pattern 7
 
         Query contains:
