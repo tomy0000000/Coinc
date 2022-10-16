@@ -2,13 +2,14 @@
 """Helper Functions"""
 import json
 import os
+import plistlib
 import re
-import sys
 import time
 import unicodedata
 from decimal import Decimal
+from urllib import error, request
 
-from .exceptions import ApiError, AppIDError, UnknownPythonError
+from .exceptions import ApiError, AppIDError
 
 INFO_PLIST_PATH = "info.plist"
 OLD_BUNDLE_ID = "tech.tomy.coon"
@@ -33,27 +34,14 @@ def manual_update_patch(workflow):
 
     Returns:
         bool -- Whether any modification got invoked
-
-    Raises:
-        UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detected
     """
     updated = False
     # Fix Bundle ID
     if workflow.bundleid.encode("utf-8") == OLD_BUNDLE_ID:
-        import plistlib
-
-        if sys.version_info.major == 2:
-            info = plistlib.readPlist(INFO_PLIST_PATH)
+        with open(INFO_PLIST_PATH, "rw") as file:
+            info = plistlib.load(file)
             info["bundleid"] = NEW_BUNDLE_ID
-            plistlib.writePlist(info, INFO_PLIST_PATH)
-        elif sys.version_info.major == 3:
-            with open(INFO_PLIST_PATH, "rw") as file:
-                info = plistlib.load(file)
-                info["bundleid"] = NEW_BUNDLE_ID
-                plistlib.dump(info, INFO_PLIST_PATH)
-        else:
-            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
+            plistlib.dump(info, INFO_PLIST_PATH)
         workflow.logger.info("Bundle ID modified")
         updated = True
 
@@ -103,26 +91,6 @@ def _calculate(value, from_currency, to_currency, rates, precision):
     )
 
 
-def _byteify(loaded_dict):
-    """A helper function used to normalize imported json in Python 2
-
-    Arguments:
-        loaded_dict {dict} -- dict return by json.load()
-
-    Returns:
-        dict -- Normalized dictionary
-    """
-    if isinstance(loaded_dict, dict):
-        return {
-            _byteify(key): _byteify(value) for key, value in loaded_dict.iteritems()
-        }
-    if isinstance(loaded_dict, list):
-        return [_byteify(element) for element in loaded_dict]
-    if isinstance(loaded_dict, unicode):
-        return loaded_dict.encode("utf-8")
-    return loaded_dict
-
-
 def is_it_float(query):
     """Check if query is a valid number
 
@@ -169,8 +137,6 @@ def is_it_symbol(query):
     symbols = load_alias()
     # Full-width to half-width transition
     query = unicodedata.normalize("NFKC", query).upper()
-    if sys.version_info.major == 2:
-        query = query.encode("utf-8")
     if query in symbols:
         return symbols[query]
     return None
@@ -228,10 +194,6 @@ def load_currencies(path="currencies.json"):
 
     Returns:
         dict -- loaded dictionary of currency list
-
-    Raises:
-        UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detected
     """
     if not os.path.exists(path):
         return refresh_currencies(path)
@@ -240,13 +202,8 @@ def load_currencies(path="currencies.json"):
     if 2592000 < last_update:
         return refresh_currencies(path)
     with open(path) as file:
-        if sys.version_info.major == 2:
-            currencies = _byteify(json.load(file, "utf-8"))
-        elif sys.version_info.major == 3:
-            currencies = json.load(file)
-        else:
-            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
-        return currencies
+        currencies = json.load(file)
+    return currencies
 
 
 def refresh_currencies(path="currencies.json"):
@@ -261,29 +218,13 @@ def refresh_currencies(path="currencies.json"):
 
     Raises:
         ApiError -- Raised when API is unreachable or return bad response
-        UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detected
     """
-    if sys.version_info.major == 2:
-        import urllib2
-
-        try:
-            response = urllib2.urlopen(CURRENCY_ENDPOINT)
-        except urllib2.HTTPError as err:
-            response = _byteify(json.load(err, "utf-8"))
-            raise ApiError("Unexpected Error", response["description"])
-        currencies = _byteify(json.load(response, "utf-8"))
-    elif sys.version_info.major == 3:
-        from urllib import error, request
-
-        try:
-            response = request.urlopen(CURRENCY_ENDPOINT)
-        except error.HTTPError as err:
-            response = json.load(err)
-            raise ApiError("Unexpected Error", response["description"])
-        currencies = json.load(response)
-    else:
-        raise UnknownPythonError("Unexpected Python Version", sys.version_info)
+    try:
+        response = request.urlopen(CURRENCY_ENDPOINT)
+    except error.HTTPError as err:
+        response = json.load(err)
+        raise ApiError("Unexpected Error", response["description"])
+    currencies = json.load(response)
     with open(path, "w+") as file:
         json.dump(currencies, file)
     return currencies
@@ -304,12 +245,7 @@ def load_rates(config, path="rates.json"):
     if not os.path.exists(path):
         return refresh_rates(config, path)
     with open(path) as file:
-        if sys.version_info.major == 2:
-            rates = _byteify(json.load(file, "utf-8"))
-        elif sys.version_info.major == 3:
-            rates = json.load(file)
-        else:
-            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
+        rates = json.load(file)
     last_update = int(time.time() - os.path.getmtime(path))
     if config.expire < last_update:
         return refresh_rates(config, path)
@@ -334,43 +270,21 @@ def refresh_rates(config, path="rates.json"):
     Raises:
         AppIDError -- Raised when App ID can not be used
         ApiError -- Raised when API is unreachable or return bad response
-        UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detected
     """
-    if sys.version_info.major == 2:
-        import urllib2
 
-        try:
-            response = urllib2.urlopen(RATE_ENDPOINT.format(config.app_id))
-        except urllib2.HTTPError as err:
-            response = _byteify(json.load(err, "utf-8"))
-            if err.code == 401:
-                raise AppIDError(
-                    f"Invalid App ID: {config.app_id}", response["description"]
-                )
-            elif err.code == 429:
-                raise AppIDError("Access Restricted", response["description"])
-            else:
-                raise ApiError("Unexpected Error", response["description"])
-        rates = _byteify(json.load(response, "utf-8"))
-    elif sys.version_info.major == 3:
-        from urllib import error, request
-
-        try:
-            response = request.urlopen(RATE_ENDPOINT.format(config.app_id))
-        except error.HTTPError as err:
-            response = json.load(err)
-            if err.code == 401:
-                raise AppIDError(
-                    f"Invalid App ID: {config.app_id}", response["description"]
-                )
-            elif err.code == 429:
-                raise AppIDError("Access Restricted", response["description"])
-            else:
-                raise ApiError("Unexpected Error", response["description"])
-        rates = json.load(response)
-    else:
-        raise UnknownPythonError("Unexpected Python Version", sys.version_info)
+    try:
+        response = request.urlopen(RATE_ENDPOINT.format(config.app_id))
+    except error.HTTPError as err:
+        response = json.load(err)
+        if err.code == 401:
+            raise AppIDError(
+                f"Invalid App ID: {config.app_id}", response["description"]
+            )
+        elif err.code == 429:
+            raise AppIDError("Access Restricted", response["description"])
+        else:
+            raise ApiError("Unexpected Error", response["description"])
+    rates = json.load(response)
     with open(path, "w+") as file:
         json.dump(rates, file)
     rates["rates"]["last_update"] = "Now"
@@ -385,21 +299,12 @@ def load_alias(path="alias.json"):
 
     Returns:
         dict -- loaded dictionary of alias
-
-    Raises:
-        UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detected
     """
     if not os.path.exists(path):
         return {}
     with open(path) as file:
-        if sys.version_info.major == 2:
-            alias = _byteify(json.load(file, "utf-8"))
-        elif sys.version_info.major == 3:
-            alias = json.load(file)
-        else:
-            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
-        return alias
+        alias = json.load(file)
+    return alias
 
 
 def load_symbols(path="symbols.json"):
@@ -411,21 +316,12 @@ def load_symbols(path="symbols.json"):
 
     Returns:
         dict -- loaded dictionary of symbols
-
-    Raises:
-        UnknownPythonError -- Raised when Python runtime version can not be
-                              correctly detected
     """
     if not os.path.exists(path):
         return {}
     with open(path) as file:
-        if sys.version_info.major == 2:
-            symbols = _byteify(json.load(file, "utf-8"))
-        elif sys.version_info.major == 3:
-            symbols = json.load(file)
-        else:
-            raise UnknownPythonError("Unexpected Python Version", sys.version_info)
-        return symbols
+        symbols = json.load(file)
+    return symbols
 
 
 def generate_result_item(workflow, value, from_currency, to_currency, rates, icon):

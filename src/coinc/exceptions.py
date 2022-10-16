@@ -8,6 +8,7 @@ class CoincError(Exception):
     Extends:
         Exception
     """
+
     pass
 
 
@@ -17,6 +18,7 @@ class ConfigError(CoincError):
     Extends:
         CoincError
     """
+
     pass
 
 
@@ -26,6 +28,7 @@ class QueryError(CoincError):
     Extends:
         CoincError
     """
+
     pass
 
 
@@ -35,6 +38,7 @@ class AppIDError(CoincError):
     Extends:
         CoincError
     """
+
     pass
 
 
@@ -44,13 +48,5 @@ class ApiError(CoincError):
     Extends:
         CoincError
     """
-    pass
 
-
-class UnknownPythonError(CoincError):
-    """Raised when Python runtime version can not be correctly detacted
-
-    Extends:
-        CoincError
-    """
     pass
