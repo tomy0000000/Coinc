@@ -82,14 +82,6 @@ def convert(workflow):
         workflow.add_item(
             title=error.args[0], subtitle=error.args[1], icon="hints/cancel.png"
         )
-    # except Exception as error:
-    #     workflow.logger.info(f"Python: {type(error).__name__}")
-    #     workflow.logger.info(error)
-    #     workflow.add_item(
-    #         title=f"Python Error: {type(error).__name__}",
-    #         subtitle=error.args[0],
-    #         icon="hints/cancel.png",
-    #     )
     workflow.send_feedback()
 
 
@@ -189,11 +181,8 @@ def refresh(workflow):
         refresh_currencies()
     except CoincError as error:
         workflow.logger.info(error)
-        print(f"❌Error occured during refresh,Coinc: {type(error).__name__}")
-    except Exception as error:
-        workflow.logger.info(error)
-        print(f"❌Error occured during refresh,Python: {type(error).__name__}")
-    print(f"✅Currency list and rates have refreshed,{datetime.now()}")
+        print(f"❌ Error occured during refresh,Coinc: {type(error).__name__}")
+    print(f"✅ Currency list and rates have refreshed,{datetime.now()}")
 
 
 def help_me(workflow):

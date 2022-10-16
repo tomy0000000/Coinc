@@ -761,7 +761,8 @@ class Workflow3(Workflow):
     def send_feedback(self):
         """Print stored items to console/Alfred as JSON."""
         if self.debugging:
-            json.dump(self.obj, sys.stdout, indent=2, separators=(",", ": "))
+            results = json.dumps(self.obj, indent=2, separators=(",", ": "))
         else:
-            json.dump(self.obj, sys.stdout)
+            results = json.dumps(self.obj)
+        sys.stdout.write(results)
         sys.stdout.flush()
