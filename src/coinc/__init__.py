@@ -7,11 +7,14 @@ from workflow import Workflow3
 from .exceptions import CoincError, ConfigError
 from .query import Query
 from .utils import (
+    add_alias,
     generate_list_items,
     init_workflow,
+    load_alias,
     load_currencies,
     refresh_currencies,
     refresh_rates,
+    remove_alias,
 )
 
 __all__ = [
@@ -22,6 +25,9 @@ __all__ = [
     "arrange",
     "save_arrange",
     "refresh",
+    "alias",
+    "save_alias",
+    "unalias",
     "help_me",
 ]
 
@@ -186,6 +192,95 @@ def refresh(workflow: Workflow3) -> None:
     print(f"✅ Currency list and rates have refreshed,{datetime.now()}")
 
 
+def alias(workflow: Workflow3) -> None:
+    """Check if alias exists"""
+    aliases = load_alias()
+    currencies = load_currencies()
+    workflow.logger.info(f"{workflow.args=}")
+    alias = workflow.args[1].upper()
+    if alias in aliases:
+        # Alias already exists
+        currency = aliases[alias]
+        workflow.add_item(
+            title=f"{alias} is already aliased",
+            subtitle=f"to {currencies[currency]} ({currency})",
+            icon=f"flags/{currency}.png",
+        )
+    elif len(workflow.args) == 2:
+        # Alias doesn't exist, but no currency is provided
+        if any(char.isdigit() for char in alias):
+            workflow.add_item(
+                title="Can't create alias with number in it",
+                icon="hints/cancel.png",
+            )
+        else:
+            workflow.add_item(
+                title=f"Alias '{alias}' to a currency",
+                # subtitle=f"to {currencies[currency]} ({currency})",
+                icon="hints/gear.png",
+            )
+    elif len(workflow.args) == 3:
+        # Alias doesn't exist, and currency is provided
+        query = workflow.args[2].upper()
+        if query in currencies:
+            workflow.add_item(
+                title=f"Alias {alias} to {currencies[query]} ({query})",
+                subtitle="Confirm to save",
+                icon=f"flags/{query}.png",
+                valid=True,
+                arg=f"create,{alias},{query}",
+            )
+        else:
+            # Suggest currencies
+            items = generate_list_items(query, list(currencies.keys()))
+            for item in items:
+                code = item["arg"]
+                item["arg"] = f"redirect,{alias} {code}"
+                item = workflow.add_item(**item)
+    else:
+        workflow.add_item(
+            title="Too many arguments",
+            subtitle="Usage: cur-alias <alias> <currency>",
+            icon="hints/cancel.png",
+        )
+    workflow.send_feedback()
+
+
+def unalias(workflow: Workflow3) -> None:
+    """Remove alias"""
+    aliases = load_alias()
+    currencies = load_currencies()
+    alias = workflow.args[1].upper()
+    if alias in aliases:
+        currency = aliases[alias]
+        workflow.add_item(
+            title=f"Unalias '{alias}' from {currencies[currency]} ({currency})",
+            subtitle="Press enter to confirm unalias",
+            icon=f"flags/{currency}.png",
+            valid=True,
+            arg=f"remove,{alias},{currency}",
+        )
+    else:
+        workflow.add_item(
+            title=f"Alias '{alias}' not found",
+            icon="hints/info.png",
+        )
+    workflow.send_feedback()
+
+
+def save_alias(workflow: Workflow3) -> None:
+    """Save alias"""
+    action, alias, currency = workflow.args[1].split(",")
+    if action == "create":
+        add_alias(alias, currency)
+        print(f"✅ Currency alias created,{alias} → {currency}")
+    elif action == "remove":
+        remove_alias(alias)
+        print(f"✅ Currency alias removed,{alias} → {currency}")
+    else:
+        print(f"❌ Invalid action,{action}")
+
+
 def help_me(workflow: Workflow3) -> None:
     """Function for showing example usage"""
     workflow.add_item(
@@ -247,14 +342,28 @@ def help_me(workflow: Workflow3) -> None:
     )
     workflow.add_item(
         title="cur-ref",
-        subtitle="Refresh Currency List & Rates",
+        subtitle="Refresh currency list & rates",
         icon="hints/gear.png",
         valid=True,
         arg="cur-ref",
     )
     workflow.add_item(
+        title="cur-index",
+        subtitle="Add alias keyword triggers",
+        icon="hints/gear.png",
+        valid=True,
+        arg="cur-index",
+    )
+    workflow.add_item(
+        title="cur-alias 新台幣 TWD",
+        subtitle="Add '新台幣' as alias to match it to TWD",
+        icon="hints/gear.png",
+        valid=True,
+        arg="cur-alias 新台幣 TWD",
+    )
+    workflow.add_item(
         title="Documentation",
-        subtitle="Select this to find out more comprehensive documentation",
+        subtitle="See documentation for more comprehensive usage",
         icon="hints/info.png",
         valid=True,
         arg="cur workflow:help",

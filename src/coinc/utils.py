@@ -325,6 +325,46 @@ def load_alias(path: str | os.PathLike = "alias.json") -> dict:
     return alias
 
 
+def add_alias(
+    alias: str, currency: str, path: str | os.PathLike = "alias.json"
+) -> None:
+    """Save new alias to JSON file
+
+    Arguments:
+        alias {str} -- new alias
+        currency {str} -- currency code
+
+    Keyword Arguments:
+        path {str} -- path or filename of Alias JSON (default: {"alias.json"})
+    """
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"File not found: {path}")
+    with open(path) as file:
+        aliases = json.load(file)
+    aliases[alias] = currency
+    with open(path, "w") as file:
+        json.dump(aliases, file, ensure_ascii=False, sort_keys=True)
+
+
+def remove_alias(alias: str, path: str | os.PathLike = "alias.json") -> None:
+    """Remove alias from JSON file
+
+    Arguments:
+        alias {str} -- alias to be removed
+
+    Keyword Arguments:
+        path {str} -- path or filename of Alias JSON (default: {"alias.json"})
+    """
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"File not found: {path}")
+    with open(path) as file:
+        aliases = json.load(file)
+    if alias in aliases:
+        del aliases[alias]
+    with open(path, "w") as file:
+        json.dump(aliases, file, ensure_ascii=False, sort_keys=True)
+
+
 def load_symbols(path: str | os.PathLike = "symbols.json") -> dict:
     """Load symbols, return empty dict if file not found
 
@@ -389,7 +429,7 @@ def generate_result_item(
 def generate_list_items(
     query: str,
     currency_codes: list,
-    favorite_filter: list | None = None,
+    filter: list | None = None,
     sort: bool = False,
 ) -> list:
     """Generate items from currency codes that can be add to workflow
@@ -400,8 +440,8 @@ def generate_list_items(
                                  generate items
 
     Keyword Arguments:
-        favorite_filter {list} -- list of favorites currency code
-                                  (default: {None})
+        filter {list} -- list of favorites currency code
+                         (default: {None})
         sort {bool} -- should items be sort (default: {False})
 
     Returns:
@@ -411,7 +451,7 @@ def generate_list_items(
     currencies = load_currencies()
     items = []
     for code in currency_codes:
-        if currencies_filter(query, code, currencies[code], favorite_filter):
+        if currencies_filter(query, code, currencies[code], filter):
             items.append(
                 {
                     "title": currencies[code],
@@ -427,12 +467,12 @@ def generate_list_items(
 
 
 def currencies_filter(
-    query: str, code: str, currency_name: str, favorites: list | None = None
+    query: str, code: str, currency_name: str, filter: list | None = None
 ) -> bool:
     """Determine whether query matched with the code or currency name
 
-    For query to match, it must not be a item in favorites
-    (if favorites is provided), and be one of the following:
+    For query to match, it must not be a item in filter
+    (if filter is provided), and be one of the following:
     * Empty query
     * Matching code from start (case insensitive)
     * Matching one of the word in currency_name from start (case insensitive)
@@ -443,13 +483,13 @@ def currencies_filter(
         currency_name {str} -- Full name of currency
 
     Keyword Arguments:
-        favorites {list} -- list of favorites currency code (default: {None})
+        filter {list} -- list of filter currency code (default: {None})
 
     Returns:
         bool -- True if matched else False
     """
-    favorites = favorites or []
-    if code in favorites:
+    filter = filter or []
+    if code in filter:
         return False
     if not query:
         return True
