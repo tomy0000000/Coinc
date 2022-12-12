@@ -1,10 +1,36 @@
 [project]
 name = "coinc"
 readme = "README.md"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
 requires-python = "~=3.10"
 authors = [
     {name = "Tomy Hsieh", email = "pypi@tomy.me"},
 ]
+dynamic = ["version", "description"]
+
+[project.license]
+file = "LICENSE"
+
+[project.optional-dependencies]
+dev = [
+    "black ~=22.12.0",
+    "isort ~=5.10.0",
+    "flake8 ~=6.0.0",
+]
+test = [
+    "pytest >=2.7.3",
+    "pytest-cov >=3.0.0",
+    "pytest-mock >=3.0.0",
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.isort]
+profile = "black"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -13,6 +39,3 @@ addopts = [
 pythonpath = [
   "src"
 ]
-
-[tool.isort]
-profile = "black"

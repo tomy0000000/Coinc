@@ -1,4 +1,4 @@
-"""Functions to be called by workflow"""
+"""💰💱Alfred Workflow for currencies conversion"""
 import os
 from datetime import datetime
 
@@ -17,6 +17,7 @@ from .utils import (
     remove_alias,
 )
 
+__version__ = "2.0.0"
 __all__ = [
     "load",
     "convert",
