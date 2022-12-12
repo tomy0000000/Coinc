@@ -28,6 +28,11 @@ jobs:
           python -m pip install --upgrade pip flit
           flit install --deps develop --symlink
 
+      - name: Setup locale
+        run: |
+          sudo locale-gen en_US.UTF-8 fr_FR.UTF-8
+          sudo update-locale LANG=en_US.UTF-8
+
       - name: Test with pytest
         run: |
           pytest --cov=coinc --cov-report=xml
