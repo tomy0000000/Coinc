@@ -13,7 +13,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -28,10 +28,12 @@ jobs:
           python -m pip install --upgrade pip flit
           flit install --deps develop --symlink
 
-      - name: Setup locale
-        run: |
-          sudo locale-gen en_US.UTF-8 fr_FR.UTF-8
-          sudo update-locale LANG=en_US.UTF-8
+      # - name: Setup locale
+      #   run: |
+      #     sudo locale-gen en_US.UTF-8 fr_FR.UTF-8
+      #     sudo update-locale LANG=en_US.UTF-8
+      #     export LC_ALL="en_US.UTF-8"
+      #     export LC_CTYPE="en_US.UTF-8"
 
       - name: Test with pytest
         run: |
