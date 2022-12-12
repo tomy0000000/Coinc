@@ -1,0 +1,18 @@
+[project]
+name = "coinc"
+readme = "README.md"
+requires-python = "~=3.10"
+authors = [
+    {name = "Tomy Hsieh", email = "pypi@tomy.me"},
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = [
+  "src"
+]
+
+[tool.isort]
+profile = "black"
