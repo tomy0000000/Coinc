@@ -155,7 +155,7 @@ class TestConvert:
         assert "orientation" in out["items"][0]["title"]
 
     def test_config_orientation_from(
-        self, helpers, config, rates, monkeypatch, mocker, capsys
+        self, helpers, settings, config, rates, monkeypatch, mocker, capsys
     ):
         monkeypatch.setenv("ORIENTATION", "FROM_FAV")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
@@ -168,7 +168,7 @@ class TestConvert:
             assert result in item["title"]
 
     def test_config_orientation_to(
-        self, helpers, config, rates, monkeypatch, mocker, capsys
+        self, helpers, settings, config, rates, monkeypatch, mocker, capsys
     ):
         monkeypatch.setenv("ORIENTATION", "TO_FAV")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)

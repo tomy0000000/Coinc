@@ -1,5 +1,6 @@
 """Helper Functions"""
 import json
+import locale
 import os
 import plistlib
 import re
@@ -97,6 +98,19 @@ def _calculate(
         Decimal(value) * (Decimal(rates[to_currency]) / Decimal(rates[from_currency])),
         precision,
     )
+
+
+def _format(value: Decimal | float, precision) -> str:
+    """Format the result of conversion
+
+    Arguments:
+        value {Decimal} -- The result of conversion
+        precision {int} -- precision point to be round
+
+    Returns:
+        str -- The formatted result
+    """
+    return locale.format_string(f"%.{precision}f", value, grouping=True, monetary=True)
 
 
 def is_it_float(query: str) -> float | None:
@@ -408,14 +422,17 @@ def generate_result_item(
     result = _calculate(
         value, from_currency, to_currency, rates, workflow.config.precision
     )
-    result_symboled = f"{symbols[to_currency]}{result:n}"
+    value_formatted = _format(value, workflow.config.precision)
+    result_formatted = _format(result, workflow.config.precision)
+    workflow.logger.debug(f"{value=} {value_formatted=}")
+    result_symboled = f"{symbols[to_currency]}{result_formatted}"
     item = workflow.add_item(
-        title=f"{value:n} {from_currency} = {result:n} {to_currency}",
-        subtitle=f"Copy '{result:n}' to clipboard",
+        title=f"{value_formatted} {from_currency} = {result_formatted} {to_currency}",
+        subtitle=f"Copy '{result_formatted}' to clipboard",
         icon=f"flags/{icon}.png",
         valid=True,
-        arg=f"{result:n}",
-        copytext=f"{result:n}",
+        arg=f"{result_formatted}",
+        copytext=f"{result_formatted}",
     )
     item.add_modifier(
         key="alt",
