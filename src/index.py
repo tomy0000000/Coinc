@@ -1,10 +1,11 @@
 import json
 import plistlib
+import re
 import sys
 from uuid import uuid4
 
-NORMAL_KEYWORDS = ["coinc", "cur-ref", "cur-index"]
-BEGIN_YPOS = 1250
+NORMAL_KEYWORDS = ["coinc", "cur-ref", "cur-index"] + list(map(str, range(10)))
+BEGIN_YPOS = 1540
 GAP = 130
 
 
@@ -91,7 +92,10 @@ def main():
         if (
             block["type"] == "alfred.workflow.input.keyword"
             and block["config"]["keyword"] not in NORMAL_KEYWORDS
-        ) or (block["type"] == "alfred.workflow.utility.argument"):
+        ) or (
+            block["type"] == "alfred.workflow.utility.argument"
+            and not re.match(r"^\d\{query\}$", block["config"]["argument"])
+        ):
             remove_block_indexes.append(i)
             remove_blocks.append(block["uid"])
         if block["type"] == "alfred.workflow.utility.junction":
