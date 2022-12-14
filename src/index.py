@@ -1,20 +1,26 @@
 import json
+import os
+import pathlib
 import plistlib
 import re
+import shutil
 import sys
 from uuid import uuid4
 
+UUID_MATCHER = re.compile(
+    r"^[0-9a-f]{8}\-[0-9a-f]{4}\-4[0-9a-f]{3}\-[89ab][0-9a-f]{3}\-[0-9a-f]{12}$"
+)
 NORMAL_KEYWORDS = ["coinc", "cur-ref", "cur-index"] + list(map(str, range(10)))
 BEGIN_YPOS = 1540
 GAP = 130
 
 
-def load():
+def load() -> tuple[dict, dict, dict]:
     with open("info.plist", "rb") as f:
         content = plistlib.load(f)
-    with open("alias.json") as f:
+    with open("alias.json", "rb") as f:
         aliases = json.load(f)
-    with open("currencies.json") as f:
+    with open("currencies.json", "rb") as f:
         currencies = json.load(f)
     return content, aliases, currencies
 
@@ -22,6 +28,19 @@ def load():
 def save(content):
     with open("info.plist", "wb") as f:
         plistlib.dump(content, f)
+
+
+def clear_icons():
+    for file in pathlib.Path(".").glob("*.png"):
+        if UUID_MATCHER.match(file.stem):
+            os.remove(file)
+
+
+def copy_icon(currency: str, uid: str):
+    try:
+        shutil.copyfile(f"flags/{currency}.png", f"{uid}.png")
+    except FileNotFoundError:
+        pass
 
 
 def add_alias_entry(
@@ -77,6 +96,7 @@ def add_alias_entry(
             "vitoclose": True,
         }
     ]
+    copy_icon(currency, keyword_uid)
 
 
 def main():
@@ -110,6 +130,9 @@ def main():
     for block_uid in remove_blocks:
         ui_blocks.pop(block_uid)
         connections.pop(block_uid)
+
+    # Remove icons
+    clear_icons()
 
     # Add blocks and connections
     ypos = BEGIN_YPOS
