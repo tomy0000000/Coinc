@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+    "bungcip.better-toml",
+    "ryanluker.vscode-coverage-gutters"
+  ]
+}
