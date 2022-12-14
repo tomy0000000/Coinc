@@ -2838,25 +2838,163 @@ For comprehensive Installation and Usage, see [Wiki](https://github.com/tomy0000
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
-	<array/>
-	<key>variables</key>
-	<dict>
-		<key>APP_ID</key>
-		<string>a4ee8df5e77e495ea3480b373c08a695</string>
-		<key>BASE</key>
-		<string>TWD</string>
-		<key>EXPIRE</key>
-		<string>300</string>
-		<key>LOCALE</key>
-		<string></string>
-		<key>ORIENTATION</key>
-		<string>DEFAULT</string>
-		<key>PRECISION</key>
-		<string>3</string>
-	</dict>
-	<key>variablesdontexport</key>
 	<array>
-		<string>APP_ID</string>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Credentials to acquire currency rates. Can be obtained by signing up an free, deletable account</string>
+			<key>label</key>
+			<string>Open Exchange Rates App ID</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>APP_ID</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>USD</string>
+				<key>placeholder</key>
+				<string>USD</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Your primary, daily-use currency</string>
+			<key>label</key>
+			<string>Base currency</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>BASE</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>1800</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>3 mins</string>
+						<string>180</string>
+					</array>
+					<array>
+						<string>5 mins (Unlimited)</string>
+						<string>300</string>
+					</array>
+					<array>
+						<string>10 mins</string>
+						<string>600</string>
+					</array>
+					<array>
+						<string>30 mins (Enterprise)</string>
+						<string>1800</string>
+					</array>
+					<array>
+						<string>1 hour (Free, Developer)</string>
+						<string>3600</string>
+					</array>
+					<array>
+						<string>2 hours</string>
+						<string>7200</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>Threshold to trigger rates update</string>
+			<key>label</key>
+			<string>Update rates</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>EXPIRE</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>e.g. en_US, leave it empty to use system language</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>For number formatting (e.g. decimal separator). Find one in this ICU list, normally looks like {language}_{COUNTRY}</string>
+			<key>label</key>
+			<string>Localization</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>LOCALE</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>DEFAULT</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>Both</string>
+						<string>DEFAULT</string>
+					</array>
+					<array>
+						<string>Base to Favorites</string>
+						<string>TO_FAV</string>
+					</array>
+					<array>
+						<string>Favorites to Base</string>
+						<string>FROM_FAV</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>In what ways would you like the conversion works</string>
+			<key>label</key>
+			<string>Conversion direction</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>ORIENTATION</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>3</string>
+				<key>placeholder</key>
+				<string>3</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Round off position after decimal point</string>
+			<key>label</key>
+			<string>Precision</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>PRECISION</string>
+		</dict>
 	</array>
 	<key>version</key>
 	<string>2.0.0</string>
