@@ -115,7 +115,7 @@ def is_it_float(query: str) -> float | None:
         return None
 
 
-def is_it_currency(query: str) -> str | None:
+def is_it_currency(config: Config, query: str) -> str | None:
     """Check if query is a valid currency
 
     Arguments:
@@ -125,9 +125,9 @@ def is_it_currency(query: str) -> str | None:
         str -- Normalized currency code
         None -- if query failed to be parsed
     """
-    currencies = load_currencies()
+    rates = load_rates(config)
     query = query.upper()
-    if query in currencies:
+    if query in rates:
         return query
     return None
 
@@ -150,7 +150,7 @@ def is_it_alias(query: str) -> str | None:
     return None
 
 
-def is_it_something_mixed(query: str) -> tuple[float, str] | None:
+def is_it_something_mixed(config: Config, query: str) -> tuple[float, str] | None:
     """Check if query is Mixed with value and currency
 
     [description]
@@ -168,7 +168,7 @@ def is_it_something_mixed(query: str) -> tuple[float, str] | None:
     match_result = re.match(r"^([0-9,]+(\.\d+)?)([A-Z_]+)$", query.upper())
     if match_result:
         value = is_it_float(match_result.groups()[0])
-        currency = is_it_currency(match_result.groups()[2])
+        currency = is_it_currency(config, match_result.groups()[2])
         if value and currency:
             return (value, currency)
 
@@ -176,7 +176,7 @@ def is_it_something_mixed(query: str) -> tuple[float, str] | None:
     match_result = re.match(r"^([A-Z_]+)([0-9,]+(\.\d+)?)$", query.upper())
     if match_result:
         value = is_it_float(match_result.groups()[1])
-        currency = is_it_currency(match_result.groups()[0])
+        currency = is_it_currency(config, match_result.groups()[0])
         if value and currency:
             return (value, currency)
 

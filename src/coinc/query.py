@@ -1,6 +1,7 @@
 """Query parser and conversion mappings"""
 from workflow import Workflow3
 
+from .config import Config
 from .exceptions import QueryError
 from .utils import (
     currencies_filter,
@@ -24,7 +25,7 @@ class Query:
         QueryError -- Raised when invalid query were given
     """
 
-    def __init__(self, args: list) -> None:
+    def __init__(self, args: list, config: Config) -> None:
         self.value: float | None = None
         self.currency_one: str | None = None
         self.currency_two: str | None = None
@@ -36,7 +37,7 @@ class Query:
             if value:
                 self._fill_value(value)
                 continue
-            currency = is_it_currency(arg)
+            currency = is_it_currency(config, arg)
             if currency:
                 self._fill_currency(currency)
                 continue
@@ -44,7 +45,7 @@ class Query:
             if aliases:
                 self._fill_currency(aliases)
                 continue
-            mixed = is_it_something_mixed(arg)
+            mixed = is_it_something_mixed(config, arg)
             if mixed:
                 self._fill_value(mixed[0])
                 self._fill_currency(mixed[1], inplace=True)
@@ -294,7 +295,8 @@ class Query:
         """
         currencies = load_currencies()
         items = []
-        for abbreviation, currency in currencies.items():
+        for abbreviation in rates:
+            currency = currencies.get(abbreviation, "")
             if currencies_filter(self.currency_two, abbreviation, currency):
                 items.append(
                     dict(

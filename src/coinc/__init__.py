@@ -82,7 +82,7 @@ def convert(workflow: Workflow3) -> None:
     """Run conversion patterns"""
     try:
         init_workflow(workflow)
-        query = Query(workflow.args[1:])
+        query = Query(workflow.args[1:], workflow.config)
         query.run_pattern(workflow)
     except CoincError as error:
         workflow.logger.info(f"Coinc: {type(error).__name__}")

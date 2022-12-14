@@ -57,6 +57,7 @@ def rates(mocker: MockFixture):
     with open("../tests/test_rates.json") as file:
         mocked_rates = json.load(file)
     mocker.patch("coinc.query.load_rates", return_value=mocked_rates)
+    mocker.patch("coinc.utils.load_rates", return_value=mocked_rates)
 
 
 @pytest.fixture

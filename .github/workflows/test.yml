@@ -6,7 +6,7 @@ on:
     paths:
       - ".github/workflows/test.yml"
       - "pyproject.toml"
-      - "coinc/**"
+      - "src/**"
       - "tests/**"
   pull_request:
     branches: ["main"]
