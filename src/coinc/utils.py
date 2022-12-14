@@ -8,7 +8,8 @@ import unicodedata
 from decimal import Decimal
 from urllib import error, request
 
-import workflow
+from workflow import Workflow3
+from workflow.workflow3 import Item3
 
 from .config import Config
 from .exceptions import ApiError, AppIDError
@@ -25,7 +26,7 @@ CURRENCY_ENDPOINT = (
 )
 
 
-def manual_update_patch(workflow: workflow.Workflow3) -> bool:
+def manual_update_patch(workflow: Workflow3) -> bool:
     """manual update metadatas for v1.3.0 name change
 
     Update include two section, change Bundle ID in info.plist to a new one,
@@ -57,7 +58,7 @@ def manual_update_patch(workflow: workflow.Workflow3) -> bool:
     return updated
 
 
-def init_workflow(workflow: workflow.Workflow3) -> workflow.Workflow3:
+def init_workflow(workflow: Workflow3) -> Workflow3:
     """Run operation to get workflow ready
 
     Inject config into Workflow
@@ -383,13 +384,13 @@ def load_symbols(path: str | os.PathLike = "symbols.json") -> dict:
 
 
 def generate_result_item(
-    workflow: workflow.Workflow3,
+    workflow: Workflow3,
     value: float,
     from_currency: str,
     to_currency: str,
     rates: dict,
     icon: str,
-) -> workflow.workflow3.Item3:
+) -> Item3:
     """Calculate conversion result and append item to workflow
 
     Arguments:

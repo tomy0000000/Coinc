@@ -1,5 +1,5 @@
 """Query parser and conversion mappings"""
-import workflow
+from workflow import Workflow3
 
 from .exceptions import QueryError
 from .utils import (
@@ -113,7 +113,7 @@ class Query:
             "Too many currencies", "Query can contain two currency code or symbol only"
         )
 
-    def run_pattern(self, workflow: workflow.Workflow3) -> None:
+    def run_pattern(self, workflow: Workflow3) -> None:
         """Run Correspond Function by Pattern
 
         | Pattern | currency_two | currency_one | value |
@@ -143,7 +143,7 @@ class Query:
             title="Last Update", subtitle=rates["last_update"], icon="hints/info.png"
         )
 
-    def _pattern_0(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_0(self, workflow: Workflow3, rates: dict) -> None:
         """Run Pattern 0
 
         Query contains:
@@ -174,7 +174,7 @@ class Query:
                     workflow, 1, workflow.config.base, currency, rates, currency
                 )
 
-    def _pattern_1(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_1(self, workflow: Workflow3, rates: dict) -> None:
         """Run Pattern 1
 
         Query contains:
@@ -215,7 +215,7 @@ class Query:
                     currency,
                 )
 
-    def _pattern_2(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_2(self, workflow: Workflow3, rates: dict) -> None:
         """Run Pattern 2
 
         Query contains:
@@ -250,7 +250,7 @@ class Query:
             self.currency_one,
         )
 
-    def _pattern_3(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_3(self, workflow: Workflow3, rates: dict) -> None:
         """Run Pattern 3
 
         Query contains:
@@ -286,7 +286,7 @@ class Query:
                 self.currency_one,
             )
 
-    def _pattern_4(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_4(self, workflow: Workflow3, rates: dict) -> None:
         """
         Method 4
         @#$ (broken currency)
@@ -312,7 +312,7 @@ class Query:
         if not items:
             raise QueryError("Invalid Currency", self.currency_two)
 
-    def _pattern_6(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_6(self, workflow: Workflow3, rates: dict) -> None:
         """Run Pattern 6
 
         Query contains:
@@ -337,7 +337,7 @@ class Query:
             workflow, 1, self.currency_two, self.currency_one, rates, self.currency_one
         )
 
-    def _pattern_7(self, workflow: workflow.Workflow3, rates: dict) -> None:
+    def _pattern_7(self, workflow: Workflow3, rates: dict) -> None:
         """Run Pattern 7
 
         Query contains:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Script for Default keyword"""
 import sys
+
 import coinc
 from workflow import Workflow3
 from workflow.util import reload_workflow
@@ -21,9 +22,7 @@ def main(workflow):
 if __name__ == "__main__":
     WF = Workflow3(
         default_settings={"favorites": ["EUR", "CNY", "JPY", "GBP"]},
-        update_settings={
-            "github_slug": "tomy0000000/Coinc",
-            "frequency": 7
-        },
-        help_url="https://git.io/JfjXg")
+        update_settings={"github_slug": "tomy0000000/Coinc", "frequency": 7},
+        help_url="https://github.com/tomy0000000/Coinc/wiki/User-Guide",
+    )
     sys.exit(WF.run(main))

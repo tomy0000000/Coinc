@@ -1,4 +1,4 @@
-"""💰💱Alfred Workflow for currencies conversion"""
+"""💰💱 Alfred Workflow for currencies conversion"""
 import os
 from datetime import datetime
 
@@ -309,23 +309,23 @@ def help_me(workflow: Workflow3) -> None:
         arg="cur 5 GBP",
     )
     workflow.add_item(
-        title="cur GBP CAD",
+        title="cur GBP TWD",
         subtitle="Convert between <currency_1> and <currency_2> with 1 unit",
         valid=True,
-        arg="cur GBP CAD",
+        arg="cur GBP TWD",
     )
     workflow.add_item(
-        title="cur 5 GBP CAD",
+        title="cur 5 GBP TWD",
         subtitle="Convert between <currency_1> and <currency_2> with <value> unit",
         valid=True,
-        arg="cur 5 GBP CAD",
+        arg="cur 5 GBP TWD",
     )
     workflow.add_item(
-        title="cur-add CAD",
-        subtitle="Add CAD to favorite list",
+        title="cur-add TWD",
+        subtitle="Add TWD to favorite list",
         icon="hints/gear.png",
         valid=True,
-        arg="cur-add CAD",
+        arg="cur-add TWD",
     )
     workflow.add_item(
         title="cur-rm GBP",
