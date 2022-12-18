@@ -424,7 +424,6 @@ def generate_result_item(
     )
     value_formatted = _format(value, workflow.config.precision)
     result_formatted = _format(result, workflow.config.precision)
-    workflow.logger.debug(f"{value=} {value_formatted=}")
     result_symboled = f"{symbols[to_currency]}{result_formatted}"
     item = workflow.add_item(
         title=f"{value_formatted} {from_currency} = {result_formatted} {to_currency}",
