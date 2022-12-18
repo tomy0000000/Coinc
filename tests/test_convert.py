@@ -100,10 +100,7 @@ class TestConvert:
         monkeypatch.setenv("BASE", "TWD")
         mocker.patch(
             "workflow.workflow.Settings",
-            return_value={
-                "__workflow_last_version": "2.0.0",
-                "favorites": ["USD"],
-            },
+            return_value={"favorites": ["USD"]},
         )
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -128,10 +125,7 @@ class TestConvert:
         monkeypatch.setenv("LOCALE", "fr_fr")
         mocker.patch(
             "workflow.workflow.Settings",
-            return_value={
-                "__workflow_last_version": "2.0.0",
-                "favorites": ["EUR"],
-            },
+            return_value={"favorites": ["EUR"]},
         )
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -198,10 +192,7 @@ class TestConvert:
         monkeypatch.setenv("PRECISION", "10")
         mocker.patch(
             "workflow.workflow.Settings",
-            return_value={
-                "__workflow_last_version": "2.0.0",
-                "favorites": ["EUR"],
-            },
+            return_value={"favorites": ["EUR"]},
         )
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])

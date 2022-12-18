@@ -45,10 +45,7 @@ def config(monkeypatch):
 def settings(mocker: MockFixture):
     mocker.patch(
         "workflow.workflow.Settings",
-        return_value={
-            "__workflow_last_version": "2.0.0",
-            "favorites": ["EUR", "CNY", "JPY", "GBP"],
-        },
+        return_value={"favorites": ["EUR", "CNY", "JPY", "GBP"]},
     )
 
 
