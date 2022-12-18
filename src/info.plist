@@ -2362,9 +2362,11 @@ fi
 	<key>readme</key>
 	<string># Coinc
 
-Coinc is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API. For a complete list of support currencies, see [Currencies](https://github.com/tomy0000000/Coinc/blob/master/Currencies.md).
+Coinc is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API.
 
-For comprehensive Installation and Usage, see [Wiki](https://github.com/tomy0000000/Coinc/wiki)</string>
+![Demo Screenshot](images/demo.png)
+
+For list of support currencies, Installation, Setup and Usage, see [Wiki](https://github.com/tomy0000000/Coinc/wiki)</string>
 	<key>uidata</key>
 	<dict>
 		<key>030A8EFF-8318-4D69-9906-F7E0E811D0C3</key>
