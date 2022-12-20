@@ -17,7 +17,7 @@ from .utils import (
     remove_alias,
 )
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 __all__ = [
     "load",
     "convert",
