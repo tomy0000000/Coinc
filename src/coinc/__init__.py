@@ -8,6 +8,7 @@ from .exceptions import CoincError, ConfigError
 from .query import Query
 from .utils import (
     add_alias,
+    currencies_filter,
     generate_list_items,
     init_workflow,
     load_alias,
@@ -251,20 +252,29 @@ def unalias(workflow: Workflow3) -> None:
     """Remove alias"""
     aliases = load_alias()
     currencies = load_currencies()
-    alias = workflow.args[1].upper()
-    if alias in aliases:
-        currency = aliases[alias]
-        workflow.add_item(
-            title=f"Unalias '{alias}' from {currencies[currency]} ({currency})",
-            subtitle="Press enter to confirm unalias",
-            icon=f"flags/{currency}.png",
-            valid=True,
-            arg=f"remove,{alias},{currency}",
-        )
+    if len(workflow.args) < 3:
+        query = workflow.args[1].upper() if len(workflow.args) == 2 else ""
+        for alias in aliases:
+            code = aliases[alias]
+            currency = currencies[code]
+            if currencies_filter(query, code, currency) or query in alias:
+                workflow.add_item(
+                    title=f"'{alias}' is aliased to {currency} ({code})",
+                    subtitle="Press enter to confirm unalias",
+                    icon=f"flags/{code}.png",
+                    valid=True,
+                    arg=f"remove,{alias},{code}",
+                )
+        if not workflow._items:
+            workflow.add_item(
+                title=f"Alias '{query}' not found",
+                icon="hints/cancel.png",
+            )
     else:
         workflow.add_item(
-            title=f"Alias '{alias}' not found",
-            icon="hints/info.png",
+            title="Too many arguments",
+            subtitle="Usage: cur-unalias <alias>",
+            icon="hints/cancel.png",
         )
     workflow.send_feedback()
 
