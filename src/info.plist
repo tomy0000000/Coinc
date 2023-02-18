@@ -2079,7 +2079,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -2117,7 +2117,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -2155,7 +2155,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -2193,7 +2193,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -2231,7 +2231,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -2269,7 +2269,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
@@ -2307,7 +2307,7 @@ fi
 				<key>text</key>
 				<string>Coinc</string>
 				<key>withspace</key>
-				<true/>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.keyword</string>
