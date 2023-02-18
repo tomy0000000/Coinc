@@ -2867,7 +2867,7 @@ For list of support currencies, Installation, Setup and Usage, see [Wiki](https:
 				<true/>
 			</dict>
 			<key>description</key>
-			<string>Credentials to acquire currency rates. Can be obtained by signing up an free, deletable account</string>
+			<string>Credentials to acquire currency rates. Can be obtained by signing up a free, deletable account</string>
 			<key>label</key>
 			<string>Open Exchange Rates App ID</string>
 			<key>type</key>
