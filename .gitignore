@@ -110,3 +110,4 @@ venv.bak/
 .alfredversionchecked
 rates.json
 currencies.json
+prefs.plist
