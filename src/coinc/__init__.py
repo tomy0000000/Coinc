@@ -199,8 +199,24 @@ def alias(workflow: Workflow3) -> None:
     aliases = load_alias()
     currencies = load_currencies()
     workflow.logger.info(f"{workflow.args=}")
-    alias = workflow.args[1].upper()
-    if alias in aliases:
+
+    alias = workflow.args[1] if len(workflow.args) > 1 else ""
+    query = workflow.args[2].upper() if len(workflow.args) > 2 else ""
+
+    if len(workflow.args) > 3:
+        workflow.add_item(
+            title="Too many arguments",
+            subtitle="Usage: cur-alias <alias> <currency>",
+            icon="hints/cancel.png",
+        )
+    elif not alias:
+        # No alias is provided, hint user to type one
+        workflow.add_item(
+            title="Type the alias",
+            subtitle="valid alias should not contain digits",
+            icon="hints/gear.png",
+        )
+    elif alias in aliases:
         # Alias already exists
         currency = aliases[alias]
         workflow.add_item(
@@ -208,43 +224,39 @@ def alias(workflow: Workflow3) -> None:
             subtitle=f"to {currencies[currency]} ({currency})",
             icon=f"flags/{currency}.png",
         )
-    elif len(workflow.args) == 2:
-        # Alias doesn't exist, but no currency is provided
-        if any(char.isdigit() for char in alias):
+    elif any(char.isdigit() for char in alias):
+        # Alias contains number
+        workflow.add_item(
+            title="Can't create alias with number in it",
+            icon="hints/cancel.png",
+        )
+    elif query in currencies:
+        # Arguments are valid, confirm to save
+        workflow.add_item(
+            title=f"Alias {alias} to {currencies[query]} ({query})",
+            subtitle="Confirm to save",
+            icon=f"flags/{query}.png",
+            valid=True,
+            arg=f"create,{alias},{query}",
+        )
+    else:
+        # Alias is valid, currency is empty or invalid code, suggest currencies
+        items = generate_list_items(query, list(currencies.keys()))
+        if items:
             workflow.add_item(
-                title="Can't create alias with number in it",
-                icon="hints/cancel.png",
+                title=f"Alias '{alias}' to ...",
+                subtitle="Type the currency (name or code) after alias with space to search",
+                icon="hints/info.png",
             )
-        else:
-            workflow.add_item(
-                title=f"Alias '{alias}' to a currency",
-                # subtitle=f"to {currencies[currency]} ({currency})",
-                icon="hints/gear.png",
-            )
-    elif len(workflow.args) == 3:
-        # Alias doesn't exist, and currency is provided
-        query = workflow.args[2].upper()
-        if query in currencies:
-            workflow.add_item(
-                title=f"Alias {alias} to {currencies[query]} ({query})",
-                subtitle="Confirm to save",
-                icon=f"flags/{query}.png",
-                valid=True,
-                arg=f"create,{alias},{query}",
-            )
-        else:
-            # Suggest currencies
-            items = generate_list_items(query, list(currencies.keys()))
             for item in items:
                 code = item["arg"]
                 item["arg"] = f"redirect,{alias} {code}"
                 item = workflow.add_item(**item)
-    else:
-        workflow.add_item(
-            title="Too many arguments",
-            subtitle="Usage: cur-alias <alias> <currency>",
-            icon="hints/cancel.png",
-        )
+        else:
+            workflow.add_item(
+                title=f"No currency found for '{query}'",
+                icon="hints/cancel.png",
+            )
     workflow.send_feedback()
 
 
