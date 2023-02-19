@@ -1,15 +1,18 @@
 import json
+from pathlib import Path
 
 import pytest
 from pytest_mock import MockFixture
 
 from workflow import Workflow3
 
+with open(Path(__file__).parent.parent / "src" / "default_settings.json", "r") as file:
+    DEFAULT_SETTINGS = json.load(file)
+
 
 class Helpers:
     WORKFLOW_INIT_KWARGS = dict(
-        default_settings={"favorites": ["EUR", "CNY", "JPY", "GBP"]},
-        update_settings={"github_slug": "tomy0000000/Coinc", "frequency": 7},
+        default_settings=DEFAULT_SETTINGS,
         help_url="https://github.com/tomy0000000/Coinc/wiki/User-Guide",
     )
 
@@ -45,7 +48,15 @@ def config(monkeypatch):
 def settings(mocker: MockFixture):
     mocker.patch(
         "workflow.workflow.Settings",
-        return_value={"favorites": ["EUR", "CNY", "JPY", "GBP"]},
+        return_value=DEFAULT_SETTINGS,
+    )
+    mocker.patch(
+        "coinc.persisted_data",
+        return_value=DEFAULT_SETTINGS["alias"],
+    )
+    mocker.patch(
+        "coinc.utils.persisted_data",
+        return_value=DEFAULT_SETTINGS["alias"],
     )
 
 

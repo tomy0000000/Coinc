@@ -11,9 +11,13 @@ PERSISTED_DATA_FILE = Path(PERSISTED_DATA_DIR) / "settings.json"
 
 def persisted_data(key: str, content: dict | None = None) -> dict:
     """Read or write data to a file in the workflow's data directory"""
+
     # Read content
-    with open(PERSISTED_DATA_FILE, "r") as file:
-        settings = json.load(file)
+    if not PERSISTED_DATA_FILE.exists():
+        settings = dict()
+    else:
+        with open(PERSISTED_DATA_FILE, "r") as file:
+            settings = json.load(file)
 
     # Write content
     if content is not None:
