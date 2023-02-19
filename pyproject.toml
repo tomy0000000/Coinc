@@ -22,6 +22,7 @@ dev = [
 test = [
     "pytest >=2.7.3",
     "pytest-cov >=3.0.0",
+    "pytest-env >=0.8.1",
     "pytest-mock >=3.0.0",
 ]
 
@@ -35,6 +36,9 @@ profile = "black"
 [tool.pytest.ini_options]
 addopts = [
     "--import-mode=importlib",
+]
+env = [
+    "alfred_workflow_data={HOME}/Library/Application Support/Alfred/Workflow Data/tech.tomy.coinc",
 ]
 pythonpath = [
   "src"
