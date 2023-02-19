@@ -12,6 +12,7 @@ from urllib import error, request
 from workflow import Workflow3
 from workflow.workflow3 import Item3
 
+from .alfred import persisted_data
 from .config import Config
 from .exceptions import ApiError, AppIDError
 
@@ -156,7 +157,7 @@ def is_it_alias(query: str) -> str | None:
         str -- Normalized currency code
         None -- if query failed to be parsed
     """
-    aliases = load_alias()
+    aliases = persisted_data("alias")
     # Full-width to half-width transition
     query = unicodedata.normalize("NFKC", query).upper()
     if query in aliases:
@@ -324,60 +325,27 @@ def refresh_rates(config: Config, path: str | os.PathLike = "rates.json") -> dic
     return rates["rates"]
 
 
-def load_alias(path: str | os.PathLike = "alias.json") -> dict:
-    """Load alias, return empty dict if file not found
-
-    Keyword Arguments:
-        path {str} -- path or filename of Alias JSON (default: {"alias.json"})
-
-    Returns:
-        dict -- loaded dictionary of alias
-    """
-    if not os.path.exists(path):
-        return {}
-    with open(path) as file:
-        alias = json.load(file)
-    return alias
-
-
-def add_alias(
-    alias: str, currency: str, path: str | os.PathLike = "alias.json"
-) -> None:
-    """Save new alias to JSON file
+def add_alias(alias: str, currency: str) -> None:
+    """Save new alias
 
     Arguments:
         alias {str} -- new alias
         currency {str} -- currency code
-
-    Keyword Arguments:
-        path {str} -- path or filename of Alias JSON (default: {"alias.json"})
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"File not found: {path}")
-    with open(path) as file:
-        aliases = json.load(file)
+    aliases = persisted_data("alias")
     aliases[alias] = currency
-    with open(path, "w") as file:
-        json.dump(aliases, file, ensure_ascii=False, sort_keys=True)
+    persisted_data("alias", aliases)
 
 
-def remove_alias(alias: str, path: str | os.PathLike = "alias.json") -> None:
-    """Remove alias from JSON file
+def remove_alias(alias: str) -> None:
+    """Remove alias
 
     Arguments:
         alias {str} -- alias to be removed
-
-    Keyword Arguments:
-        path {str} -- path or filename of Alias JSON (default: {"alias.json"})
     """
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"File not found: {path}")
-    with open(path) as file:
-        aliases = json.load(file)
-    if alias in aliases:
-        del aliases[alias]
-    with open(path, "w") as file:
-        json.dump(aliases, file, ensure_ascii=False, sort_keys=True)
+    aliases = persisted_data("alias")
+    aliases.pop(alias)
+    persisted_data("alias", aliases)
 
 
 def load_symbols(path: str | os.PathLike = "symbols.json") -> dict:

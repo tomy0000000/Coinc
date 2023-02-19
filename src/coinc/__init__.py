@@ -4,6 +4,7 @@ from datetime import datetime
 
 from workflow import Workflow3
 
+from .alfred import persisted_data
 from .exceptions import CoincError, ConfigError
 from .query import Query
 from .utils import (
@@ -11,7 +12,6 @@ from .utils import (
     currencies_filter,
     generate_list_items,
     init_workflow,
-    load_alias,
     load_currencies,
     refresh_currencies,
     refresh_rates,
@@ -196,7 +196,7 @@ def refresh(workflow: Workflow3) -> None:
 
 def alias(workflow: Workflow3) -> None:
     """Check if alias exists"""
-    aliases = load_alias()
+    aliases = persisted_data("alias")
     currencies = load_currencies()
     workflow.logger.info(f"{workflow.args=}")
 
@@ -262,7 +262,7 @@ def alias(workflow: Workflow3) -> None:
 
 def unalias(workflow: Workflow3) -> None:
     """Remove alias"""
-    aliases = load_alias()
+    aliases = persisted_data("alias")
     currencies = load_currencies()
     if len(workflow.args) < 3:
         query = workflow.args[1].upper() if len(workflow.args) == 2 else ""
