@@ -35,16 +35,6 @@ def test_dir(monkeypatch):
 
 
 @pytest.fixture()
-def config(monkeypatch):
-    monkeypatch.setenv("APP_ID", "app_id")
-    monkeypatch.setenv("BASE", "USD")
-    monkeypatch.setenv("EXPIRE", "300")
-    monkeypatch.setenv("LOCALE", "en_us")
-    monkeypatch.setenv("ORIENTAION", "DEFAULT")
-    monkeypatch.setenv("PRECISION", "3")
-
-
-@pytest.fixture()
 def settings(mocker: MockFixture):
     mocker.patch(
         "workflow.workflow.Settings",
@@ -69,5 +59,5 @@ def rates(mocker: MockFixture):
 
 
 @pytest.fixture
-def workflow(helpers, config, settings, rates) -> Workflow3:
+def workflow(helpers, settings, rates) -> Workflow3:
     return Workflow3(**helpers.WORKFLOW_INIT_KWARGS)

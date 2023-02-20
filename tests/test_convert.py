@@ -77,7 +77,7 @@ class TestConvert:
         for result, item in zip(RESULTS, out["items"]):
             assert result in item["title"]
 
-    def test_config_app_id_empty(self, helpers, config, monkeypatch, capsys):
+    def test_config_app_id_empty(self, helpers, monkeypatch, capsys):
         monkeypatch.delenv("APP_ID")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -86,7 +86,7 @@ class TestConvert:
 
         assert "APP_ID" in out["items"][0]["title"]
 
-    def test_config_base_invalid(self, helpers, config, rates, monkeypatch, capsys):
+    def test_config_base_invalid(self, helpers, rates, monkeypatch, capsys):
         monkeypatch.setenv("BASE", "CURRENCY")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -96,7 +96,7 @@ class TestConvert:
         assert "Invalid" in out["items"][0]["title"]
         assert "CURRENCY" in out["items"][0]["title"]
 
-    def test_config_base(self, helpers, config, rates, monkeypatch, mocker, capsys):
+    def test_config_base(self, helpers, rates, monkeypatch, mocker, capsys):
         monkeypatch.setenv("BASE", "TWD")
         mocker.patch(
             "workflow.workflow.Settings",
@@ -111,7 +111,7 @@ class TestConvert:
         for result, item in zip(RESULTS, out["items"]):
             assert result in item["title"]
 
-    def test_config_locale_invalid(self, helpers, config, rates, monkeypatch, capsys):
+    def test_config_locale_invalid(self, helpers, rates, monkeypatch, capsys):
         monkeypatch.setenv("LOCALE", "language_country")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -121,7 +121,7 @@ class TestConvert:
         assert "Invalid" in out["items"][0]["title"]
         assert "language_country" in out["items"][0]["title"]
 
-    def test_config_locale(self, helpers, config, rates, monkeypatch, mocker, capsys):
+    def test_config_locale(self, helpers, rates, monkeypatch, mocker, capsys):
         monkeypatch.setenv("LOCALE", "fr_fr")
         mocker.patch(
             "workflow.workflow.Settings",
@@ -136,9 +136,7 @@ class TestConvert:
         for result, item in zip(RESULTS, out["items"]):
             assert result in item["title"]
 
-    def test_config_orientation_invalid(
-        self, helpers, config, rates, monkeypatch, capsys
-    ):
+    def test_config_orientation_invalid(self, helpers, rates, monkeypatch, capsys):
         monkeypatch.setenv("ORIENTATION", "orientation")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -149,7 +147,7 @@ class TestConvert:
         assert "orientation" in out["items"][0]["title"]
 
     def test_config_orientation_from(
-        self, helpers, settings, config, rates, monkeypatch, mocker, capsys
+        self, helpers, settings, rates, monkeypatch, mocker, capsys
     ):
         monkeypatch.setenv("ORIENTATION", "FROM_FAV")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
@@ -162,7 +160,7 @@ class TestConvert:
             assert result in item["title"]
 
     def test_config_orientation_to(
-        self, helpers, settings, config, rates, monkeypatch, mocker, capsys
+        self, helpers, settings, rates, monkeypatch, mocker, capsys
     ):
         monkeypatch.setenv("ORIENTATION", "TO_FAV")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
@@ -174,9 +172,7 @@ class TestConvert:
         for result, item in zip(RESULTS, out["items"]):
             assert result in item["title"]
 
-    def test_config_precision_invalid(
-        self, helpers, config, rates, monkeypatch, capsys
-    ):
+    def test_config_precision_invalid(self, helpers, rates, monkeypatch, capsys):
         monkeypatch.setenv("PRECISION", "precision")
         workflow = Workflow3(**helpers.WORKFLOW_INIT_KWARGS)
         monkeypatch.setattr("sys.argv", ["main.py", "convert"])
@@ -186,9 +182,7 @@ class TestConvert:
         assert "Invalid" in out["items"][0]["title"]
         assert "precision" in out["items"][0]["title"]
 
-    def test_config_precision(
-        self, helpers, config, rates, monkeypatch, mocker, capsys
-    ):
+    def test_config_precision(self, helpers, rates, monkeypatch, mocker, capsys):
         monkeypatch.setenv("PRECISION", "10")
         mocker.patch(
             "workflow.workflow.Settings",

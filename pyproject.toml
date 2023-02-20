@@ -38,7 +38,27 @@ addopts = [
     "--import-mode=importlib",
 ]
 env = [
+    "alfred_preferences={HOME}/Library/Application Support/Alfred/Alfred.alfredpreferences",
+    "alfred_preferences_localhash=kMYlGfRchUhKOL8kDlvTta744rpmbXGDyesmUwwg", # This is a random value
+    "alfred_theme=theme.bundled.default",
+    "alfred_theme_background=rgba(255,255,255,0.86)",
+    "alfred_theme_selection_background=rgba(72,0,105,0.89)",
+    "alfred_theme_subtext=0",
+    "alfred_version=5.0.6",
+    "alfred_version_build=2110",
+    "alfred_workflow_bundleid=tech.tomy.coinc",
+    "alfred_workflow_cache={HOME}/Library/Caches/com.runningwithcrayons.Alfred/Workflow Data/tech.tomy.coinc",
     "alfred_workflow_data={HOME}/Library/Application Support/Alfred/Workflow Data/tech.tomy.coinc",
+    "alfred_workflow_name=Coinc",
+    "alfred_workflow_uid=user.workflow.65ADFBE5-EE00-46BC-9ACB-A0E0FF2EE87A", # This is a random value
+    "alfred_workflow_version=3.0.0",
+    "alfred_debug=1",
+    "APP_ID=8f8c7e0d9f9b4b2e8b8a7d6c5f5e4d3c", # This is a random value
+    "BASE=USD",
+    "EXPIRE=300",
+    "LOCALE=en_US",
+    "ORIENTATION=DEFAULT",
+    "PRECISION=3",
 ]
 pythonpath = [
   "src"
