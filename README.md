@@ -11,6 +11,8 @@
 [![GitHub Release (latest SemVer)](https://img.shields.io/github/v/release/tomy0000000/Coinc?color=ffa02e)](https://github.com/tomy0000000/Coinc/releases)
 [![GitHub LICENSE](https://img.shields.io/github/license/tomy0000000/Coinc?color=ffa02e)](https://github.com/tomy0000000/Coinc/blob/main/LICENSE)
 
-Coinc is an Alfred workflow which do currency conversion by using live currency rates from Open Exchange Rates API.
+Coinc is an Alfred workflow that does currency conversion by using live currency rates from Open Exchange Rates API.
 
-For list of support currencies, Installation, Setup and Usage, see [Wiki](../../wiki)
+![Demo Screenshot](src/images/demo.png)
+
+For a list of support currencies, Installation, Setup, and Usage, see [Wiki](../../wiki)
