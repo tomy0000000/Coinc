@@ -7,6 +7,7 @@ import re
 import time
 import unicodedata
 from decimal import Decimal
+from typing import Union
 from urllib import error, request
 
 from workflow import Workflow3
@@ -101,7 +102,7 @@ def _calculate(
     )
 
 
-def _format(value: Decimal | float, precision) -> str:
+def _format(value: Union[Decimal, float], precision) -> str:
     """Format the result of conversion
 
     Arguments:
@@ -114,7 +115,7 @@ def _format(value: Decimal | float, precision) -> str:
     return locale.format_string(f"%.{precision}f", value, grouping=True, monetary=True)
 
 
-def is_it_float(query: str) -> float | None:
+def is_it_float(query: str) -> Union[float, None]:
     """Check if query is a valid number
 
     Arguments:
@@ -130,7 +131,7 @@ def is_it_float(query: str) -> float | None:
         return None
 
 
-def is_it_currency(config: Config, query: str) -> str | None:
+def is_it_currency(config: Config, query: str) -> Union[str, None]:
     """Check if query is a valid currency
 
     Arguments:
@@ -147,7 +148,7 @@ def is_it_currency(config: Config, query: str) -> str | None:
     return None
 
 
-def is_it_alias(query: str) -> str | None:
+def is_it_alias(query: str) -> Union[str, None]:
     """Check if query is a valid currency symbol
 
     Arguments:
@@ -165,7 +166,7 @@ def is_it_alias(query: str) -> str | None:
     return None
 
 
-def is_it_something_mixed(config: Config, query: str) -> tuple[float, str] | None:
+def is_it_something_mixed(config: Config, query: str) -> Union[tuple[float, str], None]:
     """Check if query is Mixed with value and currency
 
     [description]
@@ -219,7 +220,7 @@ def is_it_something_mixed(config: Config, query: str) -> tuple[float, str] | Non
     return None
 
 
-def load_currencies(path: str | os.PathLike = "currencies.json") -> dict:
+def load_currencies(path: Union[str, os.PathLike] = "currencies.json") -> dict:
     """Load currency list, create one if not exists
 
     Keyword Arguments:
@@ -240,7 +241,7 @@ def load_currencies(path: str | os.PathLike = "currencies.json") -> dict:
     return currencies
 
 
-def refresh_currencies(path: str | os.PathLike = "currencies.json") -> dict:
+def refresh_currencies(path: Union[str, os.PathLike] = "currencies.json") -> dict:
     """Fetch and save the newest currency list
 
     Keyword Arguments:
@@ -264,7 +265,7 @@ def refresh_currencies(path: str | os.PathLike = "currencies.json") -> dict:
     return currencies
 
 
-def load_rates(config: Config, path: str | os.PathLike = "rates.json") -> dict:
+def load_rates(config: Config, path: Union[str, os.PathLike] = "rates.json") -> dict:
     """Load rates, update if not exist or too-old
 
     Arguments:
@@ -288,7 +289,7 @@ def load_rates(config: Config, path: str | os.PathLike = "rates.json") -> dict:
     return rates["rates"]
 
 
-def refresh_rates(config: Config, path: str | os.PathLike = "rates.json") -> dict:
+def refresh_rates(config: Config, path: Union[str, os.PathLike] = "rates.json") -> dict:
     """Fetch and save the newest rates
 
     Arguments:
@@ -348,7 +349,7 @@ def remove_alias(alias: str) -> None:
     persisted_data("alias", aliases)
 
 
-def load_symbols(path: str | os.PathLike = "symbols.json") -> dict:
+def load_symbols(path: Union[str, os.PathLike] = "symbols.json") -> dict:
     """Load symbols, return empty dict if file not found
 
     Keyword Arguments:
@@ -414,7 +415,7 @@ def generate_result_item(
 def generate_list_items(
     query: str,
     currency_codes: list,
-    filter: list | None = None,
+    filter: Union[list, None] = None,
     sort: bool = False,
 ) -> list:
     """Generate items from currency codes that can be add to workflow
@@ -452,7 +453,7 @@ def generate_list_items(
 
 
 def currencies_filter(
-    query: str, code: str, currency_name: str, filter: list | None = None
+    query: str, code: str, currency_name: str, filter: Union[list, None] = None
 ) -> bool:
     """Determine whether query matched with the code or currency name
 

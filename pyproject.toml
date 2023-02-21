@@ -4,7 +4,7 @@ readme = "README.md"
 classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
-requires-python = "~=3.10"
+requires-python = "~=3.9"
 authors = [
     {name = "Tomy Hsieh", email = "pypi@tomy.me"},
 ]

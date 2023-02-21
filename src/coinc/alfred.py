@@ -2,6 +2,7 @@
 import json
 import os
 from pathlib import Path
+from typing import Union
 
 PERSISTED_DATA_DIR = os.getenv("alfred_workflow_data")
 if not PERSISTED_DATA_DIR:
@@ -9,7 +10,7 @@ if not PERSISTED_DATA_DIR:
 PERSISTED_DATA_FILE = Path(PERSISTED_DATA_DIR) / "settings.json"
 
 
-def persisted_data(key: str, content: dict | None = None) -> dict:
+def persisted_data(key: str, content: Union[dict, None] = None) -> dict:
     """Read or write data to a file in the workflow's data directory"""
 
     # Read content
