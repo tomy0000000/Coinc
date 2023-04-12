@@ -62,7 +62,7 @@ class TestAlias:
         coinc.alias(workflow)
         out = helpers.decode_json(capsys.readouterr().out)
 
-        assert "alias" in out["items"][0]["title"]
+        assert "SOME-ALIAS" in out["items"][0]["title"]
         assert "USD" in out["items"][0]["title"]
         assert "Confirm to save" in out["items"][0]["subtitle"]
 
