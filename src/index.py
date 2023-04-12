@@ -7,6 +7,8 @@ import shutil
 import sys
 from uuid import uuid4
 
+from coinc.alfred import persisted_data
+
 UUID_MATCHER = re.compile(
     r"^[0-9a-f]{8}\-[0-9a-f]{4}\-4[0-9a-f]{3}\-[89ab][0-9a-f]{3}\-[0-9a-f]{12}$"
 )
@@ -18,8 +20,7 @@ GAP = 130
 def load() -> tuple[dict, dict, dict]:
     with open("info.plist", "rb") as f:
         content = plistlib.load(f)
-    with open("alias.json", "rb") as f:
-        aliases = json.load(f)
+    aliases = persisted_data("alias")
     with open("currencies.json", "rb") as f:
         currencies = json.load(f)
     return content, aliases, currencies
