@@ -200,7 +200,7 @@ def alias(workflow: Workflow3) -> None:
     currencies = load_currencies()
     workflow.logger.info(f"{workflow.args=}")
 
-    alias = workflow.args[1] if len(workflow.args) > 1 else ""
+    alias = workflow.args[1].upper() if len(workflow.args) > 1 else ""
     query = workflow.args[2].upper() if len(workflow.args) > 2 else ""
 
     if len(workflow.args) > 3:
@@ -294,6 +294,7 @@ def unalias(workflow: Workflow3) -> None:
 def save_alias(workflow: Workflow3) -> None:
     """Save alias"""
     action, alias, currency = workflow.args[1].split(",")
+    alias = alias.upper()
     if action == "create":
         add_alias(alias, currency)
         print(f"✅ Currency alias created,{alias} → {currency}")
